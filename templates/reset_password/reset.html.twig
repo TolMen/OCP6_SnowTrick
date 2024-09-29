@@ -1,12 +1,22 @@
 {% extends 'base.html.twig' %}
 
-{% block title %}Reset your password{% endblock %}
+{% block title %}Réinitialiser votre mot de passe{% endblock %}
 
 {% block body %}
-    <h1>Reset your password</h1>
+<div class="container d-flex justify-content-center align-items-center" style="height: 89vh;">
+    <div class="col-md-4">
+        <h1 class="h3 mb-3 font-weight-normal text-center">Réinitialiser votre mot de passe</h1>
 
-    {{ form_start(resetForm) }}
-        {{ form_row(resetForm.plainPassword) }}
-        <button class="btn btn-primary">Reset password</button>
-    {{ form_end(resetForm) }}
+        {{ form_start(resetForm) }}
+            <div class="mb-4">
+                {{ form_row(resetForm.plainPassword, {
+                    'label': 'Nouveau mot de passe',
+                    'attr': {'class': 'form-control'}
+                }) }}
+            </div>
+
+            <button class="btn btn-primary w-100">Réinitialiser le mot de passe</button>
+        {{ form_end(resetForm) }}
+    </div>
+</div>
 {% endblock %}
