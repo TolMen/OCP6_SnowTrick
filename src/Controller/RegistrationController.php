@@ -30,6 +30,9 @@ class RegistrationController extends AbstractController
         $form->handleRequest($request);
 
         if ($form->isSubmitted() && $form->isValid()) {
+
+            $user->setdateCreated(new \DateTimeImmutable());
+
             /** @var string $plainPassword */
             $plainPassword = $form->get('plainPassword')->getData();
 
@@ -44,13 +47,13 @@ class RegistrationController extends AbstractController
                 (new TemplatedEmail())
                     ->from(new Address('no-reply@snowtricks.com', 'SnowTricks Bot'))
                     ->to((string) $user->getEmail())
-                    ->subject('Veuillez confirmer votre email')
+                    ->subject('Please Confirm your Email')
                     ->htmlTemplate('registration/confirmation_email.html.twig')
             );
 
             // do anything else you need here, like send an email
 
-            return $this->redirectToRoute('_profiler_home'); //Remplacer par la page d'accueil !!!!!
+            return $this->redirectToRoute('_profiler_home'); //Remplacer par la page d'accueil
         }
 
         return $this->render('registration/register.html.twig', [
