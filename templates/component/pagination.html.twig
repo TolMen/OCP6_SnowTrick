@@ -1,0 +1,10 @@
+{% if pagination.linkPrevious is defined or pagination.linkNext is defined %}
+    <div class="d-inline-flex mt-4">
+        {% if pagination.linkPrevious is defined %}
+            <a class="btn btn-primary" href="{{ pagination.linkPrevious }}">Précédent</a>
+        {% endif %}
+        {% if pagination.linkNext is defined %}
+            <a class="btn btn-primary ms-auto" href="{{ pagination.linkNext }}">Suivant</a>
+        {% endif %}
+    </div>
+{% endif %}
