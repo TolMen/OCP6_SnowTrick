@@ -1,18 +1,14 @@
 <!DOCTYPE html>
   <html>
     <head>
-        <title>{% block title %}SnowTricks{% endblock %}</title>
+        <title>{% block title %}{% endblock %}</title>
         {% include 'component/meta.html.twig' %}
         {% block stylesheets %}{% endblock %}
     </head>
     <body>
 
       {% include 'component/navbar.html.twig' %}
-      {% include 'component/flash_messages.html.twig' %}
       {% block body %}{% endblock %}
-
-      {% include 'component/footer.html.twig' %}
-      {% include 'component/scroll-to-top-button.html.twig' %}
 
       {% block javascripts %}
         <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.2.3/dist/js/bootstrap.bundle.min.js"></script>
