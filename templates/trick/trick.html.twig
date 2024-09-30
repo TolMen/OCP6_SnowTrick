@@ -1,0 +1,102 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}{{ trick.title }}{% endblock %}
+
+{% block body %}
+    <section id="trick-header" class="page-section mt-4">
+        <div class="container" style="background-image: url({{ image(trick.featuredImage) }})">
+            <h1 class="masthead-heading text-uppercase">{{ trick.title }}</h1>
+        </div>
+    </section>
+
+
+    <section class="page-section pt-1">
+        <div class="container">
+            <ul class="nav nav-pills justify-content-center mb-5" id="pills-tab" role="tablist">
+                <li class="nav-item" role="presentation">
+                    <h2 class="nav-link fs-3 {{ tabs.gallery.active }}" id="pills-gallery-tab" data-bs-toggle="pill"
+                        data-bs-target="#pills-gallery" data-tab-slug="gallery" data-trick-slug="{{ trick.slug }}"
+                        type="button" role="tab" aria-controls="pills-gallery" aria-selected="true">GALLERIE
+                    </h2>
+                </li>
+                <li class="nav-item" role="presentation">
+                    <h2 class="nav-link fs-3 {{ tabs.informations.active }}" id="pills-informations-tab"
+                        data-bs-toggle="pill"
+                        data-bs-target="#pills-informations" data-tab-slug="informations"
+                        data-trick-slug="{{ trick.slug }}"
+                        type="button" role="tab" aria-controls="pills-informations" aria-selected="false">INFORMATIONS
+                    </h2>
+                </li>
+                <li class="nav-item" role="presentation">
+                    <h2 class="nav-link fs-3 {{ tabs.chat.active }}" id="pills-chat-tab" data-bs-toggle="pill"
+                        data-bs-target="#pills-chat" data-tab-slug="chat" data-trick-slug="{{ trick.slug }}"
+                        type="button" role="tab" aria-controls="pills-chat" aria-selected="false">DISCUSSION
+                    </h2>
+                </li>
+            </ul>
+            <div class="tab-content" id="pills-tabContent">
+                {% include 'trick/tab/_gallery.html.twig' %}
+                {% include 'trick/tab/_informations.html.twig' %}
+                {% include 'trick/tab/_chat.html.twig' %}
+            </div>
+        </div>
+    </section>
+
+    <!-- Medias Modals-->
+    <!-- Medias item 1 modal popup-->
+    {% for key, image in trick.images %}
+        <div class="portfolio-modal modal fade" id="imageModal{{ image.id }}" tabindex="-1" role="dialog"
+             aria-hidden="true">
+            <div class="modal-dialog">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <div class="close-modal" data-bs-dismiss="modal">
+                            <i class="fas fa-window-close fa-3x"></i></div>
+                        <div class="modal-title">{{ trick.title }} - Media {{ key + 1 }}/{{ trick.images|length }}</div>
+                        <div class="modal-nav">
+                            {% if(key > 0) %}
+                                <a class="btn btn-primary btn-previous portfolio-link" data-bs-toggle="modal"
+                                   href="#imageModal{{ image.id - 1 }}">
+                                    <i class="fas fa-arrow-left"></i></a>
+                            {% endif %}
+                            {% if(key + 1 < trick.images|length) %}
+                                <a class="btn btn-primary btn-next portfolio-link" data-bs-toggle="modal"
+                                   href="#imageModal{{ image.id + 1 }}">
+                                    <i class="fas fa-arrow-right"></i></a>
+                            {% endif %}
+                        </div>
+                    </div>
+                    <div class="container">
+                        <div class="row justify-content-center">
+                            <div class="col-lg-8">
+                                <div class="modal-body">
+                                    <!-- Details-->
+                                    <img class="img-fluid d-block mx-auto" src="{{ image(image) }}"
+                                         alt="{{ image.title }}"/>
+                                    <p>{{ image.title }}</p>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    {% endfor %}
+    <script>
+        $("div[id^='imageModal']").each(function () {
+            let currentModal = $(this);
+
+            //click next
+            currentModal.find('.btn-next').click(function () {
+                currentModal.modal('hide');
+                currentModal.closest("div[id^='imageModal']").nextAll("div[id^='imageModal']").first().modal('show');
+            });
+
+            //click prev
+            currentModal.find('.btn-previous').click(function () {
+                currentModal.modal('hide');
+                currentModal.closest("div[id^='imageModal']").prevAll("div[id^='imageModal']").first().modal('show');
+            });
+        });
+    </script>
+{% endblock %}

@@ -1,0 +1,4 @@
+<form class="d-inline trick-delete-form" method="post" action="{{ path('trick_delete', {'slug': trick.slug}) }}" onsubmit="return confirm('La suppresssion est définitive. Continuer ?');">
+    <input type="hidden" name="_token" value="{{ csrf_token('delete' ~ trick.slug) }}">
+    <button class="btn"><i class="far fa-trash-alt ms-1"></i></button>
+</form>

@@ -1,0 +1,5 @@
+<form class="d-inline-flex" method="post" action="{{ path('comment_delete', {'id': comment.id}) }}"
+      onsubmit="return confirm('Le commentaire sera supprimé de manière définitive. Continuer ?');">
+    <input type="hidden" name="_token" value="{{ csrf_token('delete' ~ comment.id) }}">
+    <button class="btn text-secondary p-0">Supprimer</button>
+</form>
