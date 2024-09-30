@@ -32,23 +32,25 @@ class ChangePasswordFormType extends AbstractType
                         new Length([
                             'min' => 12,
                             'minMessage' => 'Your password should be at least {{ limit }} characters',
-                            // max length allowed by Symfony for security reasons
                             'max' => 4096,
                         ]),
                         new PasswordStrength(),
                         new NotCompromisedPassword(),
                     ],
                     'label' => 'Nouveau mot de passe',
+                    // Ajout du style pour le label et le champ
+                    'label_attr' => ['style' => 'margin-bottom: 0.5rem;'],
+                    'attr' => ['class' => 'form-control', 'style' => 'width: 100%; margin-bottom: 1rem;'],
                 ],
                 'second_options' => [
                     'label' => 'Confirmez votre mot de passe',
+                    // Ajout du style pour le label et le champ
+                    'label_attr' => ['style' => 'margin-bottom: 0.5rem;'],
+                    'attr' => ['class' => 'form-control', 'style' => 'width: 100%;'],
                 ],
                 'invalid_message' => 'The password fields must match.',
-                // Instead of being set onto the object directly,
-                // this is read and encoded in the controller
                 'mapped' => false,
-            ])
-        ;
+            ]);
     }
 
     public function configureOptions(OptionsResolver $resolver): void
