@@ -3,6 +3,8 @@
 namespace App\Entity;
 
 use App\Repository\UserRepository;
+use Doctrine\Common\Collections\ArrayCollection;
+use Doctrine\Common\Collections\Collection;
 use Doctrine\DBAL\Types\Types;
 use Doctrine\ORM\Mapping as ORM;
 use Symfony\Bridge\Doctrine\Validator\Constraints\UniqueEntity;
@@ -48,6 +50,17 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
 
     #[ORM\Column]
     private bool $isVerified = false;
+
+    /**
+     * @var Collection<int, Trick>
+     */
+    #[ORM\OneToMany(targetEntity: Trick::class, mappedBy: 'id_user')]
+    private Collection $id_trick;
+
+    public function __construct()
+    {
+        $this->id_trick = new ArrayCollection();
+    }
 
     public function getId(): ?int
     {
@@ -180,6 +193,36 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
     public function setVerified(bool $isVerified): static
     {
         $this->isVerified = $isVerified;
+
+        return $this;
+    }
+
+    /**
+     * @return Collection<int, Trick>
+     */
+    public function getIdTrick(): Collection
+    {
+        return $this->id_trick;
+    }
+
+    public function addIdTrick(Trick $idTrick): static
+    {
+        if (!$this->id_trick->contains($idTrick)) {
+            $this->id_trick->add($idTrick);
+            $idTrick->setIdUser($this);
+        }
+
+        return $this;
+    }
+
+    public function removeIdTrick(Trick $idTrick): static
+    {
+        if ($this->id_trick->removeElement($idTrick)) {
+            // set the owning side to null (unless already changed)
+            if ($idTrick->getIdUser() === $this) {
+                $idTrick->setIdUser(null);
+            }
+        }
 
         return $this;
     }
