@@ -29,6 +29,10 @@ class Trick
     #[ORM\Column(type: Types::DATE_MUTABLE, nullable: true)]
     private ?\DateTimeInterface $dateUpdated = null;
 
+    #[ORM\ManyToOne(targetEntity: User::class, inversedBy: 'tricks')]
+    #[ORM\JoinColumn(nullable: false)]
+    private ?User $user = null; // Renommé pour plus de clarté
+
     public function getId(): ?int
     {
         return $this->id;
@@ -90,6 +94,18 @@ class Trick
     public function setDateUpdated(?\DateTimeInterface $dateUpdated): static
     {
         $this->dateUpdated = $dateUpdated;
+
+        return $this;
+    }
+
+    public function getUser(): ?User
+    {
+        return $this->user;
+    }
+
+    public function setUser(?User $user): static
+    {
+        $this->user = $user;
 
         return $this;
     }
