@@ -18,7 +18,7 @@ class Images
     private ?string $imgURL = null;
 
     #[ORM\Column(type: Types::DATE_MUTABLE)]
-    private ?\DateTimeInterface $dateCreated = null;
+    private ?\DateTimeInterface $dateAdd = null;
 
     #[ORM\ManyToOne]
     #[ORM\JoinColumn(nullable: false)]
@@ -43,12 +43,12 @@ class Images
 
     public function getDateCreated(): ?\DateTimeInterface
     {
-        return $this->dateCreated;
+        return $this->dateAdd;
     }
 
-    public function setDateCreated(\DateTimeInterface $dateCreated): static
+    public function setDateCreated(\DateTimeInterface $dateAdd): static
     {
-        $this->dateCreated = $dateCreated;
+        $this->dateAdd = $dateAdd;
 
         return $this;
     }
