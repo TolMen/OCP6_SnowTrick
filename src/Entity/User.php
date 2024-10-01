@@ -54,12 +54,12 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
     /**
      * @var Collection<int, Trick>
      */
-    #[ORM\OneToMany(targetEntity: Trick::class, mappedBy: 'id_user')]
-    private Collection $id_trick;
+    #[ORM\OneToMany(targetEntity: Trick::class, mappedBy: 'user')]
+    private Collection $tricks;
 
     public function __construct()
     {
-        $this->id_trick = new ArrayCollection();
+        $this->tricks = new ArrayCollection();
     }
 
     public function getId(): ?int
@@ -200,27 +200,27 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
     /**
      * @return Collection<int, Trick>
      */
-    public function getIdTrick(): Collection
+    public function getTricks(): Collection
     {
-        return $this->id_trick;
+        return $this->tricks;
     }
 
-    public function addIdTrick(Trick $idTrick): static
+    public function addTrick(Trick $trick): static
     {
-        if (!$this->id_trick->contains($idTrick)) {
-            $this->id_trick->add($idTrick);
-            $idTrick->setIdUser($this);
-        }
+        if (!$this->tricks->contains($trick)) {
+            $this->tricks->add($trick);
+            $trick->setUser($this);
+        } 
 
-        return $this;
+        return $this; 
     }
 
-    public function removeIdTrick(Trick $idTrick): static
+    public function removeTrick(Trick $trick): static
     {
-        if ($this->id_trick->removeElement($idTrick)) {
-            // set the owning side to null (unless already changed)
-            if ($idTrick->getIdUser() === $this) {
-                $idTrick->setIdUser(null);
+        if ($this->tricks->removeElement($trick)) {
+            // Set the owning side to null (unless already changed)
+            if ($trick->getUser() === $this) {
+                $trick->setUser(null);
             }
         }
 
