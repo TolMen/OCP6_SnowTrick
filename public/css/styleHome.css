@@ -1,0 +1,38 @@
+/* ---------------------- */
+/* ----- HOME PAGE ----- */
+/* -------------------- */
+
+.home-banner {
+    background-image: url('../images/imgMontagne.jpg');
+    background-size: cover;
+    background-position: center;
+    height: 89vh;
+    position: relative;
+}
+
+.home-banner .container {
+    z-index: 2;
+}
+
+.home-banner .row {
+    height: 100%;
+}
+
+.home-banner .col-md-6 {
+    text-align: right;
+}
+
+.home-banner::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background-color: rgba(0, 0, 0, 0.5);
+    z-index: 1;
+}
+
+/* -------------------------- */
+/* ----- END HOME PAGE ----- */
+/* ------------------------ */
