@@ -33,6 +33,41 @@
     z-index: 1;
 }
 
+/* FLECHE */
+
+.scroll-to-top {
+    position: fixed;
+    right: 20px; /* Positionne à droite */
+    display: block; /* Affiche la flèche par défaut */
+    background-color: #007bff; /* Couleur de fond */
+    color: white; /* Couleur de l'icône */
+    border-radius: 50px; /* Arrondi */
+    padding: 10px; /* Espacement */
+    text-align: center;
+    font-size: 18px; /* Taille de l'icône */
+    z-index: 1000; /* Assure que la flèche soit au-dessus */
+    transition: background-color 0.3s; /* Pour un effet au survol */
+}
+
+.scroll-to-top:hover {
+    background-color: #0056b3; /* Couleur lors du survol */
+}
+
+/* Flèche vers le bas */
+.down {
+    bottom: 50px; /* Positionne la flèche vers le bas un peu plus haut */
+}
+
+/* Flèche vers le haut */
+.up {
+    bottom: 100px; /* Positionne la flèche vers le haut */
+}
+
+
+
+
+
+
 /* -------------------------- */
 /* ----- END HOME PAGE ----- */
 /* ------------------------ */
