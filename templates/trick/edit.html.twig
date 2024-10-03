@@ -1,0 +1,17 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Édition du trick{% endblock %}
+
+{% block body %}
+<div class="container mt-5">
+    <h2>Éditer le trick : {{ trick.name }}</h2>
+
+    <form action="{{ path('trick_update', {id: trick.id}) }}" method="post">
+        <div class="mb-3">
+            <label for="name" class="form-label">Nom du trick</label>
+            <input type="text" class="form-control" id="name" name="name" value="{{ trick.name }}">
+        </div>
+        <button type="submit" class="btn btn-primary">Enregistrer les modifications</button>
+    </form>
+</div>
+{% endblock %}

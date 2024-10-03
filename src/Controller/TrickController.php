@@ -2,13 +2,13 @@
 
 namespace App\Controller;
 
-use App\Entity\Trick; // Import de l'entité Trick
-use Doctrine\ORM\EntityManagerInterface; // Import pour la gestion de la base de données
+use App\Entity\Trick;
+use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
-use Symfony\Component\HttpFoundation\Request; // Pour gérer les requêtes HTTP
+use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
-use Symfony\Component\Routing\Attribute\Route;
-use Symfony\Component\Security\Http\Attribute\IsGranted; // Pour vérifier les droits d'accès
+use Symfony\Component\Routing\Annotation\Route;
+use Symfony\Component\Security\Http\Attribute\IsGranted;
 
 class TrickController extends AbstractController
 {
@@ -25,22 +25,42 @@ class TrickController extends AbstractController
     }
 
     #[Route('/trick/delete/{id}', name: 'trick_delete', methods: ['POST'])]
-    #[IsGranted('ROLE_USER')] // Vérifie que l'utilisateur est connecté
+    #[IsGranted('ROLE_USER')]
     public function deleteTrick(Trick $trick, EntityManagerInterface $entityManager, Request $request): Response
     {
-        // Vérification du jeton CSRF
         if ($this->isCsrfTokenValid('delete' . $trick->getId(), $request->request->get('_token'))) {
-            // Suppression du trick
             $entityManager->remove($trick);
             $entityManager->flush();
-
-            // Message flash pour informer l'utilisateur
             $this->addFlash('success', 'Le trick a été supprimé avec succès.');
         } else {
             $this->addFlash('danger', 'Jeton CSRF invalide. Impossible de supprimer le trick.');
         }
 
-        // Redirection vers la liste des tricks ou la page d'accueil
-        return $this->redirectToRoute('app_home'); // Remplacez par votre route de redirection
+        return $this->redirectToRoute('app_home');
+    }
+
+    #[Route('/trick/edit/{id}', name: 'trick_edit')]
+    #[IsGranted('ROLE_USER')]
+    public function editTrick(Trick $trick): Response
+    {
+        return $this->render('trick/edit.html.twig', [
+            'trick' => $trick,
+        ]);
+    }
+
+    #[Route('/trick/update/{id}', name: 'trick_update', methods: ['POST'])]
+    #[IsGranted('ROLE_USER')]
+    public function updateTrick(Request $request, Trick $trick, EntityManagerInterface $entityManager): Response
+    {
+        $trickName = $request->request->get('name');
+
+        $trick->setName($trickName);
+
+        $entityManager->persist($trick);
+        $entityManager->flush();
+
+        $this->addFlash('success', 'Le trick a été mis à jour avec succès.');
+
+        return $this->redirectToRoute('app_home');
     }
 }
