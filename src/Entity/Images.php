@@ -20,8 +20,8 @@ class Images
     #[ORM\Column(type: Types::DATE_MUTABLE)]
     private ?\DateTimeInterface $dateAdd = null;
 
-    #[ORM\ManyToOne]
-    #[ORM\JoinColumn(nullable: false)]
+    #[ORM\ManyToOne(inversedBy: 'images')]
+    #[ORM\JoinColumn(nullable: false, onDelete: "CASCADE")] // Ajout de "onDelete: CASCADE"
     private ?Trick $id_trick = null;
 
     public function getId(): ?int
