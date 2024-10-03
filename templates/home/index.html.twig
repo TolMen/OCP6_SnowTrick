@@ -3,7 +3,6 @@
 {% block title %}SnowTricks{% endblock %}
 
 {% block body %}
-<div id="top"></div> <!-- Ajout d'un ID pour le haut de la page -->
 
 <div class="home-banner d-flex align-items-center">
     <div class="container text-right">
@@ -18,10 +17,12 @@
 </div>
 
 <div class="container mt-5 text-center">
-    <h2 class="mb-4">Liste des tricks</h2>
+    <h2 class="mb-4" id="tricks">Liste des tricks</h2>
     <div style="margin-bottom: 50px;"></div>
-    <div class="row" id="tricks"> <!-- Ajout d'un ID pour la liste des tricks -->
-        {% for trick in tricks %}
+
+    <div class="row">
+        <!-- Affichage des 8 premiers tricks -->
+        {% for trick in tricks[:8] %}
             <div class="col-md-3">
                 <div class="card mb-4">
                     {% if trick.images|length > 0 %}
@@ -32,14 +33,42 @@
                     </div>
                 </div>
             </div>
-        {% else %}
-            <p>Aucun trick disponible.</p>
         {% endfor %}
     </div>
+
+    <!-- Affichage des autres tricks masqués par défaut -->
+    <div class="row d-none" id="extra-tricks"> <!-- Utilisation de la classe 'd-none' de Bootstrap -->
+        {% for trick in tricks[8:] %}
+            <div class="col-md-3">
+                <div class="card mb-4">
+                    {% if trick.images|length > 0 %}
+                        <img src="{{ asset(trick.images[0].imgURL) }}" class="card-img-top img-fluid" alt="{{ trick.name }}" style="height: 200px; object-fit: cover;">
+                    {% endif %}
+                    <div class="card-body text-center">
+                        <h5 class="card-title">{{ trick.name }}</h5>
+                    </div>
+                </div>
+            </div>
+        {% endfor %}
+    </div>
+
+    <!-- Bouton Voir plus -->
+    {% if tricks|length > 8 %}
+        <button id="show-more-btn" class="btn btn-primary mt-4">Voir plus</button>
+    {% endif %}
 </div>
 
 <!-- Flèche de retour en haut -->
-<a href="#tricks" class="scroll-to-top down" title="Descendre vers les tricks">&#8595;</a>
-<a href="#top" class="scroll-to-top up" title="Retour en haut">&#8593;</a>
+<a href="#tricks" class="scroll-to-top down" title="Descendre vers les tricks"><i class="fa-solid fa-arrow-down-long"></i></a>
+<a href="#top" class="scroll-to-top up" title="Retour en haut"><i class="fa-solid fa-arrow-up-long"></i></a>
+
+<!-- Ajout d'un script JS pour gérer le bouton "Voir plus" -->
+<script>
+    document.getElementById('show-more-btn').addEventListener('click', function() {
+        var extraTricks = document.getElementById('extra-tricks');
+        extraTricks.classList.remove('d-none'); // Affiche les tricks supplémentaires
+        this.style.display = 'none'; // Masque le bouton "Voir plus"
+    });
+</script>
 
 {% endblock %}
