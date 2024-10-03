@@ -3,7 +3,6 @@
 {% block title %}SnowTricks{% endblock %}
 
 {% block body %}
-
 <div class="home-banner d-flex align-items-center">
     <div class="container text-right">
         <div class="row justify-content-end">
@@ -28,8 +27,23 @@
                     {% if trick.images|length > 0 %}
                         <img src="{{ asset(trick.images[0].imgURL) }}" class="card-img-top img-fluid" alt="{{ trick.name }}" style="height: 200px; object-fit: cover;">
                     {% endif %}
-                    <div class="card-body text-center">
-                        <h5 class="card-title">{{ trick.name }}</h5>
+                    <div class="card-body">
+                        <div class="d-flex justify-content-between align-items-center">
+                            <!-- Titre du trick aligné à gauche -->
+                            <h5 class="card-title mb-0">{{ trick.name }}</h5>
+
+                            <!-- Icônes d'édition et de suppression visibles uniquement si l'utilisateur est connecté -->
+                            {% if is_granted('ROLE_USER') %}
+                                <div>
+                                    <a href="#" class="text-primary mx-2" title="Éditer">
+                                        <i class="fa-solid fa-pen"></i>
+                                    </a>
+                                    <a href="#" class="text-danger mx-2" title="Supprimer">
+                                        <i class="fa-solid fa-trash"></i>
+                                    </a>
+                                </div>
+                            {% endif %}
+                        </div>
                     </div>
                 </div>
             </div>
@@ -37,15 +51,28 @@
     </div>
 
     <!-- Affichage des autres tricks masqués par défaut -->
-    <div class="row d-none" id="extra-tricks"> <!-- Utilisation de la classe 'd-none' de Bootstrap -->
+    <div class="row d-none" id="extra-tricks">
         {% for trick in tricks[8:] %}
             <div class="col-md-3">
                 <div class="card mb-4">
                     {% if trick.images|length > 0 %}
                         <img src="{{ asset(trick.images[0].imgURL) }}" class="card-img-top img-fluid" alt="{{ trick.name }}" style="height: 200px; object-fit: cover;">
                     {% endif %}
-                    <div class="card-body text-center">
-                        <h5 class="card-title">{{ trick.name }}</h5>
+                    <div class="card-body">
+                        <div class="d-flex justify-content-between align-items-center">
+                            <h5 class="card-title mb-0">{{ trick.name }}</h5>
+
+                            {% if is_granted('ROLE_USER') %}
+                                <div>
+                                    <a href="#" class="text-primary mx-2" title="Éditer">
+                                        <i class="fa-solid fa-pen"></i>
+                                    </a>
+                                    <a href="#" class="text-danger mx-2" title="Supprimer">
+                                        <i class="fa-solid fa-trash"></i>
+                                    </a>
+                                </div>
+                            {% endif %}
+                        </div>
                     </div>
                 </div>
             </div>
