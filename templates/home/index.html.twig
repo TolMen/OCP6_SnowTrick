@@ -38,11 +38,33 @@
                                     <a href="#" class="text-primary mx-2" title="Éditer">
                                         <i class="fa-solid fa-pen"></i>
                                     </a>
-                                    <a href="#" class="text-danger mx-2" title="Supprimer">
+                                    <a href="#" class="text-danger mx-2" title="Supprimer" data-bs-toggle="modal" data-bs-target="#deleteModal{{ trick.id }}">
                                         <i class="fa-solid fa-trash"></i>
                                     </a>
                                 </div>
                             {% endif %}
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Fenêtre modale de confirmation pour chaque trick -->
+            <div class="modal fade" id="deleteModal{{ trick.id }}" tabindex="-1" aria-labelledby="deleteModalLabel{{ trick.id }}" aria-hidden="true">
+                <div class="modal-dialog">
+                    <div class="modal-content">
+                        <div class="modal-header">
+                            <h5 class="modal-title" id="deleteModalLabel{{ trick.id }}">Confirmation de suppression</h5>
+                            <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                        </div>
+                        <div class="modal-body">
+                            Êtes-vous sûr de vouloir supprimer le trick <strong>{{ trick.name }}</strong> ?
+                        </div>
+                        <div class="modal-footer">
+                            <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Annuler</button>
+                            <form action="{{ path('trick_delete', {id: trick.id}) }}" method="post">
+                                <input type="hidden" name="_token" value="{{ csrf_token('delete' ~ trick.id) }}">
+                                <button type="submit" class="btn btn-danger">Supprimer</button>
+                            </form>
                         </div>
                     </div>
                 </div>
@@ -67,11 +89,33 @@
                                     <a href="#" class="text-primary mx-2" title="Éditer">
                                         <i class="fa-solid fa-pen"></i>
                                     </a>
-                                    <a href="#" class="text-danger mx-2" title="Supprimer">
+                                    <a href="#" class="text-danger mx-2" title="Supprimer" data-bs-toggle="modal" data-bs-target="#deleteModal{{ trick.id }}">
                                         <i class="fa-solid fa-trash"></i>
                                     </a>
                                 </div>
                             {% endif %}
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Fenêtre modale de confirmation pour chaque trick -->
+            <div class="modal fade" id="deleteModal{{ trick.id }}" tabindex="-1" aria-labelledby="deleteModalLabel{{ trick.id }}" aria-hidden="true">
+                <div class="modal-dialog">
+                    <div class="modal-content">
+                        <div class="modal-header">
+                            <h5 class="modal-title" id="deleteModalLabel{{ trick.id }}">Confirmation de suppression</h5>
+                            <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                        </div>
+                        <div class="modal-body">
+                            Êtes-vous sûr de vouloir supprimer le trick <strong>{{ trick.name }}</strong> ?
+                        </div>
+                        <div class="modal-footer">
+                            <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Annuler</button>
+                            <form action="{{ path('trick_delete', {id: trick.id}) }}" method="post">
+                                <input type="hidden" name="_token" value="{{ csrf_token('delete' ~ trick.id) }}">
+                                <button type="submit" class="btn btn-danger">Supprimer</button>
+                            </form>
                         </div>
                     </div>
                 </div>
