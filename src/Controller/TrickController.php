@@ -15,12 +15,8 @@ class TrickController extends AbstractController
     #[Route('/trick', name: 'app_trick')]
     public function index(): Response
     {
-        // Vous pouvez récupérer les tricks de la base de données ici
-        // Assurez-vous d'importer votre repository TrickRepository
-
         return $this->render('trick/index.html.twig', [
             'controller_name' => 'TrickController',
-            // 'tricks' => $tricks // Passez la liste des tricks ici
         ]);
     }
 
@@ -52,10 +48,18 @@ class TrickController extends AbstractController
     #[IsGranted('ROLE_USER')]
     public function updateTrick(Request $request, Trick $trick, EntityManagerInterface $entityManager): Response
     {
+        // Récupérer les données du formulaire
         $trickName = $request->request->get('name');
+        $trickContent = $request->request->get('content');
+        $trickCategory = $request->request->get('category');
 
+        // Mise à jour des champs
         $trick->setName($trickName);
+        $trick->setContent($trickContent);
+        $trick->setCategory($trickCategory);
+        $trick->setDateUpdated(new \DateTime());
 
+        // Sauvegarde des changements
         $entityManager->persist($trick);
         $entityManager->flush();
 

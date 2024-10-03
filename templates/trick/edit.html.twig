@@ -11,6 +11,15 @@
             <label for="name" class="form-label">Nom du trick</label>
             <input type="text" class="form-control" id="name" name="name" value="{{ trick.name }}">
         </div>
+        <div class="mb-3">
+            <label for="content" class="form-label">Description du trick</label>
+            <textarea class="form-control" id="content" name="content" rows="5">{{ trick.content }}</textarea>
+        </div>
+        <div class="mb-3">
+            <label for="category" class="form-label">Catégorie</label>
+            <input type="text" class="form-control" id="category" name="category" value="{{ trick.category }}">
+        </div>
+
         <button type="submit" class="btn btn-primary">Enregistrer les modifications</button>
     </form>
 </div>
