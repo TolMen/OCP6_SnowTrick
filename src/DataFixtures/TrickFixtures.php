@@ -3,6 +3,7 @@
 namespace App\DataFixtures;
 
 use App\Entity\Trick;
+use App\Entity\User; // Importer l'entité User
 use Doctrine\Bundle\FixturesBundle\Fixture;
 use Doctrine\Persistence\ObjectManager;
 
@@ -10,6 +11,14 @@ class TrickFixtures extends Fixture
 {
     public function load(ObjectManager $manager)
     {
+        // Récupérer l'utilisateur existant avec l'ID 15
+        $user = $manager->getRepository(User::class)->find(15);
+        
+        // Vérifier si l'utilisateur existe
+        if (!$user) {
+            throw new \Exception('Aucun utilisateur avec l\'ID 15 n\'existe. Assurez-vous que l\'utilisateur est créé avant de charger les tricks.');
+        }
+
         $tricks = [
             ['Ollie', 'Un saut réalisé sans utiliser de kicker, en frappant le tail de la planche contre le sol pour prendre de la hauteur.', 'Sauts'],
             ['Nose Grab', 'Attraper le nez de la planche pendant un saut.', 'Grabs'],
@@ -30,10 +39,11 @@ class TrickFixtures extends Fixture
             $trick->setCategory($category);
 
             // Date de création fixée au 23 septembre 2024
-            $trick->setdateCreated(new \DateTime('2024-09-23'));
+            $trick->setDateCreated(new \DateTime('2024-09-23'));
+            $trick->setDateUpdated(null);
 
-            // Date de mise à jour initialisée à null
-            $trick->setdateUpdated(null);
+            // Associer l'utilisateur au trick
+            $trick->setUser($user); // Lier l'utilisateur
 
             $manager->persist($trick);
         }

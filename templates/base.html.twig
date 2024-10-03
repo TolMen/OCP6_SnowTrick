@@ -5,13 +5,15 @@
         {% include 'component/meta.html.twig' %}
         {% block stylesheets %}{% endblock %}
     </head>
-    <body>
+    <body id="top">
 
       {% include 'component/navbar.html.twig' %}
       {% block body %}{% endblock %}
-
+      {% include 'component/footer.html.twig' %}
       {% block javascripts %}
         <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.2.3/dist/js/bootstrap.bundle.min.js"></script>
+
+        <script src="{{ asset('js/scripts.js') }}"></script>
 
       {% endblock %}
     </body>

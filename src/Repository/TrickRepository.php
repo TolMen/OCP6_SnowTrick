@@ -19,6 +19,16 @@ class TrickRepository extends ServiceEntityRepository
         parent::__construct($registry, Trick::class);
     }
 
+    public function findAllWithImages(): array
+    {
+        // Création d'une requête pour récupérer tous les tricks avec leurs images
+        return $this->createQueryBuilder('t')
+            ->leftJoin('t.images', 'i') // Assume que 'images' est le nom de la relation dans l'entité Trick
+            ->addSelect('i') // Sélectionner les images associées
+            ->getQuery()
+            ->getResult();
+    }
+
     // /**
     //  * @return Trick[] Returns an array of Trick objects
     //  */

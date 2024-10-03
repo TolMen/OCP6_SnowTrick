@@ -5,6 +5,8 @@ namespace App\Entity;
 use App\Repository\TrickRepository;
 use Doctrine\DBAL\Types\Types;
 use Doctrine\ORM\Mapping as ORM;
+use Doctrine\Common\Collections\ArrayCollection;
+use Doctrine\Common\Collections\Collection;
 
 #[ORM\Entity(repositoryClass: TrickRepository::class)]
 class Trick
@@ -31,7 +33,16 @@ class Trick
 
     #[ORM\ManyToOne(targetEntity: User::class, inversedBy: 'tricks')]
     #[ORM\JoinColumn(nullable: false)]
-    private ?User $user = null; // Renommé pour plus de clarté
+    private ?User $user = null;
+
+    // Ajout de la relation avec l'entité Images
+    #[ORM\OneToMany(mappedBy: 'id_trick', targetEntity: Images::class)]
+    private Collection $images;
+
+    public function __construct()
+    {
+        $this->images = new ArrayCollection();
+    }
 
     public function getId(): ?int
     {
@@ -46,7 +57,6 @@ class Trick
     public function setName(string $name): static
     {
         $this->name = $name;
-
         return $this;
     }
 
@@ -58,7 +68,6 @@ class Trick
     public function setContent(string $content): static
     {
         $this->content = $content;
-
         return $this;
     }
 
@@ -70,7 +79,6 @@ class Trick
     public function setCategory(string $category): static
     {
         $this->category = $category;
-
         return $this;
     }
 
@@ -82,7 +90,6 @@ class Trick
     public function setDateCreated(\DateTimeInterface $dateCreated): static
     {
         $this->dateCreated = $dateCreated;
-
         return $this;
     }
 
@@ -94,7 +101,6 @@ class Trick
     public function setDateUpdated(?\DateTimeInterface $dateUpdated): static
     {
         $this->dateUpdated = $dateUpdated;
-
         return $this;
     }
 
@@ -106,7 +112,11 @@ class Trick
     public function setUser(?User $user): static
     {
         $this->user = $user;
-
         return $this;
+    }
+
+    public function getImages(): Collection
+    {
+        return $this->images;
     }
 }
