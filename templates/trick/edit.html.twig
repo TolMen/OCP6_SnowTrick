@@ -6,34 +6,6 @@
 <div class="container mt-5">
     <h2>Éditer le trick : {{ trick.name }}</h2>
 
-    <div class="mb-3 text-center">
-        <h2>Image actuelle</h2>
-        {% if trick.getFirstImageUrl() %}
-            <img src="{{ trick.getFirstImageUrl() }}" alt="Trick Image" class="img-fluid mb-3" style="max-width: 100%; height: auto;" />
-        {% else %}
-            <p>Aucune image n'est disponible pour ce trick.</p>
-        {% endif %}
-
-        <div class="d-flex justify-content-center">
-            {% if trick.getFirstImageUrl() is null %}
-                <button id="changeImageBtn" class="btn btn-secondary mx-2">
-                    <i class="fas fa-pencil-alt"></i> <!-- Icône sans texte -->
-                </button>
-            {% else %}
-                <form action="{{ path('trick_delete_image', {id: trick.id}) }}" method="post" class="mx-2">
-                    <input type="hidden" name="_token" value="{{ csrf_token('delete_image' ~ trick.id) }}">
-                    <button type="submit" class="btn btn-danger">
-                        <i class="fas fa-trash-alt"></i> <!-- Icône de suppression -->
-                    </button>
-                </form>
-                <button id="changeImageBtn" class="btn btn-secondary mx-2">
-                    <i class="fas fa-pencil-alt"></i> <!-- Icône de modification -->
-                </button>
-            {% endif %}
-        </div>
-    </div>
-
-
     <form action="{{ path('trick_update', {id: trick.id}) }}" method="post">
         <div class="mb-3">
             <label for="name" class="form-label">Nom du trick</label>
@@ -50,27 +22,5 @@
 
         <button type="submit" class="btn btn-primary">Enregistrer les modifications</button>
     </form>
-
-    <!-- Modal for image upload -->
-    <div class="modal fade" id="changeImageModal" tabindex="-1" aria-labelledby="changeImageModalLabel" aria-hidden="true">
-        <div class="modal-dialog">
-            <div class="modal-content">
-                <div class="modal-header">
-                    <h5 class="modal-title" id="changeImageModalLabel">Changer l'image</h5>
-                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-                </div>
-                <div class="modal-body">
-                    <form id="imageUploadForm" action="{{ path('trick_image_upload', {id: trick.id}) }}" method="post" enctype="multipart/form-data">
-                        <input type="file" name="image" id="imageUpload" accept="image/*" required />
-                        <input type="hidden" name="_token" value="{{ csrf_token('upload_image_' ~ trick.id) }}">
-                    </form>
-                </div>
-                <div class="modal-footer">
-                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Fermer</button>
-                    <button type="button" class="btn btn-primary" id="uploadImageBtn">Télécharger</button>
-                </div>
-            </div>
-        </div>
-    </div>
 </div>
 {% endblock %}
