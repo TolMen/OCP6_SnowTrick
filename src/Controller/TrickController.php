@@ -2,6 +2,7 @@
 
 namespace App\Controller;
 
+use App\Entity\Images;
 use App\Entity\Trick;
 use App\Form\TrickType;
 use Doctrine\ORM\EntityManagerInterface;
@@ -10,6 +11,7 @@ use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
 use Symfony\Component\Security\Http\Attribute\IsGranted;
+use Symfony\Component\String\Slugger\SluggerInterface;
 
 class TrickController extends AbstractController
 {
@@ -23,17 +25,42 @@ class TrickController extends AbstractController
 
     #[Route('/trick/new', name: 'trick_new')]
     #[IsGranted('ROLE_USER')]
-    public function newTrick(Request $request, EntityManagerInterface $entityManager): Response
+    public function newTrick(Request $request, EntityManagerInterface $entityManager, SluggerInterface $slugger): Response
     {
         $trick = new Trick();
-        $form = $this->createForm(TrickType::class, $trick); // Assurez-vous que TrickType est défini
+        $form = $this->createForm(TrickType::class, $trick);
 
         $form->handleRequest($request);
         if ($form->isSubmitted() && $form->isValid()) {
+            // Gérer l'image
+            $imageFile = $form->get('image')->getData();
+            if ($imageFile) {
+                // Générer un nom de fichier unique
+                $originalFilename = pathinfo($imageFile->getClientOriginalName(), PATHINFO_FILENAME);
+                $safeFilename = $slugger->slug($originalFilename);
+                $newFilename = $safeFilename.'-'.uniqid().'.'.$imageFile->guessExtension();
+
+                
+                $imageFile->move(
+                    $this->getParameter('images_directory'),
+                    $newFilename
+                );
+
+                
+                $image = new Images();
+                $image->setImgURL('uploads/images/imgFigure/' . $newFilename);
+                $image->setDateCreated(new \DateTime());
+                $image->setIdTrick($trick);
+
+                // Enregistrer l'image dans la base de données
+                $entityManager->persist($image);
+            }
+
             // Assigner l'utilisateur connecté au trick
             $trick->setUser($this->getUser());
-            $trick->setDateCreated(new \DateTime()); // Définir la date de création
+            $trick->setDateCreated(new \DateTime()); 
 
+            // Enregistrer le trick
             $entityManager->persist($trick);
             $entityManager->flush();
 
@@ -45,8 +72,6 @@ class TrickController extends AbstractController
             'form' => $form->createView(),
         ]);
     }
-
-
 
     #[Route('/trick/delete/{id}', name: 'trick_delete', methods: ['POST'])]
     #[IsGranted('ROLE_USER')]

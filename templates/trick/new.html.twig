@@ -7,6 +7,12 @@
     <h2 class="mb-4">Créer un nouveau trick</h2>
 
     {{ form_start(form, {'attr': {'class': 'needs-validation', 'novalidate': 'novalidate'}}) }}
+
+        <div class="mb-3">
+            {{ form_label(form.image) }}
+            {{ form_widget(form.image, {'attr': {'class': 'form-control'}}) }}
+            {{ form_errors(form.image) }}
+        </div>
         
         <div class="mb-3">
             {{ form_label(form.name) }}
