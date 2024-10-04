@@ -8,93 +8,36 @@
     <div class="container text-right">
         <div class="row justify-content-end">
             <div class="col-md-6">
-                <!-- Section de la bannière principale avec un titre et une description -->
-                <h1 class="display-4 text-light">Explorez le monde des figures de snow</h1> <!-- Grand titre accrocheur -->
-                <p class="lead text-light">Découvrez et maîtrisez les figures emblématiques des riders !</p> <!-- Texte de présentation -->
-                <a href="#tricks" class="btn btn-primary btn-lg">Voir les figures</a> <!-- Bouton d'appel à l'action qui amène à la liste des tricks -->
+                <h1 class="display-4 text-light">Explorez le monde des figures de snow</h1>
+                <p class="lead text-light">Découvrez et maîtrisez les figures emblématiques des riders !</p>
+                <a href="#tricks" class="btn btn-primary btn-lg">Voir les figures</a>
             </div>
         </div>
     </div>
 </div>
 
 <div class="container mt-5 text-center">
-    <h2 class="mb-4" id="tricks">Liste des tricks</h2> <!-- Titre pour la section des tricks -->
-    <div style="margin-bottom: 50px;"></div> <!-- Espace vide pour la mise en page -->
+    <h2 class="mb-4" id="tricks">Liste des tricks</h2>
+
+    <div style="margin-bottom: 50px;"></div>
 
     <div class="row">
-        <!-- Boucle sur les 8 premiers tricks à afficher sous forme de cartes -->
         {% for trick in tricks[:8] %}
             <div class="col-md-3">
                 <div class="card mb-4">
-                    <!-- Vérifie si le trick a des images et affiche la première -->
-                    {% if trick.images|length > 0 %}
-                        <img src="{{ asset(trick.images[0].imgURL) }}" class="card-img-top img-fluid" alt="{{ trick.name }}" style="height: 200px; object-fit: cover;">
-                    {% endif %}
-                    <div class="card-body">
-                        <div class="d-flex justify-content-between align-items-center">
-                            <h5 class="card-title mb-0">{{ trick.name }}</h5> <!-- Nom du trick affiché sur la carte -->
-
-                            <!-- Affiche les icônes d'édition et de suppression uniquement si l'utilisateur est connecté -->
-                            {% if is_granted('ROLE_USER') %}
-                                <div>
-                                    <a href="{{ path('trick_edit', {id: trick.id}) }}" class="text-primary mx-2" title="Éditer">
-                                        <i class="fa-solid fa-pen"></i> <!-- Icône d'édition -->
-                                    </a>
-                                    <a href="#" class="text-danger mx-2" title="Supprimer" data-bs-toggle="modal" data-bs-target="#deleteModal{{ trick.id }}">
-                                        <i class="fa-solid fa-trash"></i> <!-- Icône de suppression avec une fenêtre modale pour la confirmation -->
-                                    </a>
-                                </div>
-                            {% endif %}
-                        </div>
-                    </div>
-                </div>
-            </div>
-
-            <!-- Fenêtre modale de confirmation de suppression pour chaque trick -->
-            <div class="modal fade" id="deleteModal{{ trick.id }}" tabindex="-1" aria-labelledby="deleteModalLabel{{ trick.id }}" aria-hidden="true">
-                <div class="modal-dialog">
-                    <div class="modal-content">
-                        <div class="modal-header">
-                            <h5 class="modal-title" id="deleteModalLabel{{ trick.id }}">Confirmation de suppression</h5>
-                            <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-                        </div>
-                        <div class="modal-body">
-                            Êtes-vous sûr de vouloir supprimer le trick <strong>{{ trick.name }}</strong> ? <!-- Message de confirmation de suppression -->
-                        </div>
-                        <div class="modal-footer">
-                            <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Annuler</button> <!-- Bouton pour fermer la modale sans supprimer -->
-                            <form action="{{ path('trick_delete', {id: trick.id}) }}" method="post"> <!-- Formulaire de suppression du trick -->
-                                <input type="hidden" name="_token" value="{{ csrf_token('delete' ~ trick.id) }}"> <!-- Token CSRF pour sécuriser la suppression -->
-                                <button type="submit" class="btn btn-danger">Supprimer</button> <!-- Bouton pour confirmer la suppression -->
-                            </form>
-                        </div>
-                    </div>
-                </div>
-            </div>
-        {% endfor %}
-    </div>
-
-    <!-- Affichage des autres tricks masqués par défaut sous forme de cartes -->
-    <div class="row d-none" id="extra-tricks">
-        {% for trick in tricks[8:] %}
-            <div class="col-md-3">
-                <div class="card mb-4">
-                    <!-- Affiche l'image principale du trick s'il y en a une -->
                     {% if trick.images|length > 0 %}
                         <img src="{{ asset(trick.images[0].imgURL) }}" class="card-img-top img-fluid" alt="{{ trick.name }}" style="height: 200px; object-fit: cover;">
                     {% endif %}
                     <div class="card-body">
                         <div class="d-flex justify-content-between align-items-center">
                             <h5 class="card-title mb-0">{{ trick.name }}</h5>
-
-                            <!-- Icônes d'édition et de suppression pour les utilisateurs connectés -->
                             {% if is_granted('ROLE_USER') %}
                                 <div>
                                     <a href="{{ path('trick_edit', {id: trick.id}) }}" class="text-primary mx-2" title="Éditer">
-                                        <i class="fa-solid fa-pen"></i> <!-- Icône d'édition -->
+                                        <i class="fa-solid fa-pen"></i>
                                     </a>
                                     <a href="#" class="text-danger mx-2" title="Supprimer" data-bs-toggle="modal" data-bs-target="#deleteModal{{ trick.id }}">
-                                        <i class="fa-solid fa-trash"></i> <!-- Icône de suppression avec une fenêtre modale -->
+                                        <i class="fa-solid fa-trash"></i>
                                     </a>
                                 </div>
                             {% endif %}
@@ -103,7 +46,6 @@
                 </div>
             </div>
 
-            <!-- Fenêtre modale de confirmation pour chaque trick -->
             <div class="modal fade" id="deleteModal{{ trick.id }}" tabindex="-1" aria-labelledby="deleteModalLabel{{ trick.id }}" aria-hidden="true">
                 <div class="modal-dialog">
                     <div class="modal-content">
@@ -112,7 +54,7 @@
                             <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
                         </div>
                         <div class="modal-body">
-                            Êtes-vous sûr de vouloir supprimer le trick <strong>{{ trick.name }}</strong> ? <!-- Message de confirmation de suppression -->
+                            Êtes-vous sûr de vouloir supprimer le trick <strong>{{ trick.name }}</strong> ?
                         </div>
                         <div class="modal-footer">
                             <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Annuler</button>
@@ -127,14 +69,68 @@
         {% endfor %}
     </div>
 
-    <!-- Bouton pour afficher plus de tricks masqués si plus de 8 tricks existent -->
-    {% if tricks|length > 8 %}
-        <button id="show-more-btn" class="btn btn-primary mt-4">Voir plus</button> <!-- Bouton 'Voir plus' pour afficher les tricks supplémentaires -->
-    {% endif %}
+    <div class="row d-none" id="extra-tricks">
+        {% for trick in tricks[8:] %}
+            <div class="col-md-3">
+                <div class="card mb-4">
+                    {% if trick.images|length > 0 %}
+                        <img src="{{ asset(trick.images[0].imgURL) }}" class="card-img-top img-fluid" alt="{{ trick.name }}" style="height: 200px; object-fit: cover;">
+                    {% endif %}
+                    <div class="card-body">
+                        <div class="d-flex justify-content-between align-items-center">
+                            <h5 class="card-title mb-0">{{ trick.name }}</h5>
+                            {% if is_granted('ROLE_USER') %}
+                                <div>
+                                    <a href="{{ path('trick_edit', {id: trick.id}) }}" class="text-primary mx-2" title="Éditer">
+                                        <i class="fa-solid fa-pen"></i>
+                                    </a>
+                                    <a href="#" class="text-danger mx-2" title="Supprimer" data-bs-toggle="modal" data-bs-target="#deleteModal{{ trick.id }}">
+                                        <i class="fa-solid fa-trash"></i>
+                                    </a>
+                                </div>
+                            {% endif %}
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="modal fade" id="deleteModal{{ trick.id }}" tabindex="-1" aria-labelledby="deleteModalLabel{{ trick.id }}" aria-hidden="true">
+                <div class="modal-dialog">
+                    <div class="modal-content">
+                        <div class="modal-header">
+                            <h5 class="modal-title" id="deleteModalLabel{{ trick.id }}">Confirmation de suppression</h5>
+                            <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                        </div>
+                        <div class="modal-body">
+                            Êtes-vous sûr de vouloir supprimer le trick <strong>{{ trick.name }}</strong> ?
+                        </div>
+                        <div class="modal-footer">
+                            <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Annuler</button>
+                            <form action="{{ path('trick_delete', {id: trick.id}) }}" method="post">
+                                <input type="hidden" name="_token" value="{{ csrf_token('delete' ~ trick.id) }}">
+                                <button type="submit" class="btn btn-danger">Supprimer</button>
+                            </form>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        {% endfor %}
+    </div>
+
+    <!-- Ajout des boutons "Voir Plus" et "Créer un Trick" ici -->
+    <div class="mt-4">
+        {% if tricks|length > 8 %}
+            <button id="show-more-btn" class="btn btn-primary">Voir plus</button>
+        {% endif %}
+        {% if is_granted('ROLE_USER') %}
+            <a href="{{ path('trick_new') }}" class="btn btn-success ms-2">
+                <i class="fa-solid fa-plus"></i> Trick
+            </a>
+        {% endif %}
+    </div>
 </div>
 
-<!-- Flèches pour la navigation vers le haut et vers le bas de la page -->
-<a href="#tricks" class="scroll-to-top down" title="Descendre vers les tricks"><i class="fa-solid fa-arrow-down-long"></i></a> <!-- Flèche pour descendre vers la liste des tricks -->
-<a href="#top" class="scroll-to-top up" title="Retour en haut"><i class="fa-solid fa-arrow-up-long"></i></a> <!-- Flèche pour remonter en haut de la page -->
+<a href="#tricks" class="scroll-to-top down" title="Descendre vers les tricks"><i class="fa-solid fa-arrow-down-long"></i></a>
+<a href="#top" class="scroll-to-top up" title="Retour en haut"><i class="fa-solid fa-arrow-up-long"></i></a>
 
 {% endblock %}
