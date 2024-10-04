@@ -3,6 +3,7 @@
 namespace App\Controller;
 
 use App\Entity\Trick;
+use App\Form\TrickType;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Request;
@@ -19,6 +20,33 @@ class TrickController extends AbstractController
             'controller_name' => 'TrickController',
         ]);
     }
+
+    #[Route('/trick/new', name: 'trick_new')]
+    #[IsGranted('ROLE_USER')]
+    public function newTrick(Request $request, EntityManagerInterface $entityManager): Response
+    {
+        $trick = new Trick();
+        $form = $this->createForm(TrickType::class, $trick); // Assurez-vous que TrickType est défini
+
+        $form->handleRequest($request);
+        if ($form->isSubmitted() && $form->isValid()) {
+            // Assigner l'utilisateur connecté au trick
+            $trick->setUser($this->getUser());
+            $trick->setDateCreated(new \DateTime()); // Définir la date de création
+
+            $entityManager->persist($trick);
+            $entityManager->flush();
+
+            $this->addFlash('success', 'Le trick a été créé avec succès.');
+            return $this->redirectToRoute('app_home'); // Rediriger vers la page d'accueil
+        }
+
+        return $this->render('trick/new.html.twig', [
+            'form' => $form->createView(),
+        ]);
+    }
+
+
 
     #[Route('/trick/delete/{id}', name: 'trick_delete', methods: ['POST'])]
     #[IsGranted('ROLE_USER')]

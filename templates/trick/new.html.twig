@@ -1,0 +1,32 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Créer un nouveau trick{% endblock %}
+
+{% block body %}
+<div class="container mt-5">
+    <h2 class="mb-4">Créer un nouveau trick</h2>
+
+    {{ form_start(form, {'attr': {'class': 'needs-validation', 'novalidate': 'novalidate'}}) }}
+        
+        <div class="mb-3">
+            {{ form_label(form.name) }}
+            {{ form_widget(form.name, {'attr': {'class': 'form-control', 'placeholder': 'Entrez le nom du trick'}}) }}
+            {{ form_errors(form.name) }}
+        </div>
+
+        <div class="mb-3">
+            {{ form_label(form.content) }}
+            {{ form_widget(form.content, {'attr': {'class': 'form-control', 'placeholder': 'Décrivez le trick ici...', 'rows': 5}}) }}
+            {{ form_errors(form.content) }}
+        </div>
+
+        <div class="mb-3">
+            {{ form_label(form.category) }}
+            {{ form_widget(form.category, {'attr': {'class': 'form-control', 'placeholder': 'Entrez la catégorie'}}) }}
+            {{ form_errors(form.category) }}
+        </div>
+
+        <button type="submit" class="btn btn-primary">Ajouter le trick</button>
+    {{ form_end(form) }}
+</div>
+{% endblock %}
