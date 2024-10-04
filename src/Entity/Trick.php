@@ -119,4 +119,5 @@ class Trick
     {
         return $this->images;
     }
+
 }
