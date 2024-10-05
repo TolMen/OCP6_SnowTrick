@@ -32,6 +32,7 @@
                 {{ form_label(form.name) }}
                 {{ form_widget(form.name, {'attr': {'class': 'form-control', 'placeholder': 'Entrez le nom du trick'}}) }}
                 {{ form_errors(form.name) }}
+                {{ form_errors(form) }} {#  Affiche si le nom du trick existe deja #}
             </div>
         </div>
 

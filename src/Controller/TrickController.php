@@ -6,6 +6,7 @@ use App\Entity\Images;
 use App\Entity\Videos;
 use App\Entity\Trick;
 use App\Form\TrickType;
+use Symfony\Component\Form\FormError;
 use Symfony\Component\HttpFoundation\File\UploadedFile;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
@@ -34,6 +35,16 @@ class TrickController extends AbstractController
 
         $form->handleRequest($request);
         if ($form->isSubmitted() && $form->isValid()) {
+            // Vérification de l'existence du nom dans la base de données
+            $existingTrick = $entityManager->getRepository(Trick::class)->findOneBy(['name' => $trick->getName()]);
+            if ($existingTrick) {
+                // Si le trick existe déjà, ajoutez un message d'erreur et restez sur le formulaire
+                $form->addError(new FormError('Ce nom de trick existe déjà.'));
+                return $this->render('trick/new.html.twig', [
+                    'form' => $form->createView(),
+                ]);
+            }
+
             // Gérer le fichier image
             $imageFile = $form->get('image')->getData(); // Récupérer le fichier d'image
 
@@ -61,7 +72,7 @@ class TrickController extends AbstractController
 
             // Assigner l'utilisateur connecté au trick
             $trick->setUser($this->getUser());
-            $trick->setDateCreated(new \DateTime()); 
+            $trick->setDateCreated(new \DateTime());
 
             // Enregistrer le trick
             $entityManager->persist($trick);
@@ -80,13 +91,14 @@ class TrickController extends AbstractController
             }
 
             $this->addFlash('success', 'Le trick a été ajouté avec succès !');
-            return $this->redirectToRoute('app_home'); 
+            return $this->redirectToRoute('app_home');
         }
 
         return $this->render('trick/new.html.twig', [
             'form' => $form->createView(),
         ]);
     }
+
 
 
     #[Route('/trick/delete/{id}', name: 'trick_delete', methods: ['POST'])]
