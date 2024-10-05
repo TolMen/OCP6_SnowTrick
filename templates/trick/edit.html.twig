@@ -3,29 +3,70 @@
 {% block title %}Édition du trick{% endblock %}
 
 {% block body %}
-<div class="container mt-5">
-    <h2>Éditer le trick : {{ trick.name }}</h2>
+<div class="container mt-5 d-flex justify-content-center align-items-center flex-column" style="height: auto;">
+    <h2 class="mb-4 text-center">Éditer le trick : {{ trick.name }}</h2>
 
-    <form action="{{ path('trick_update', {id: trick.id}) }}" method="post">
-        <div class="mb-3">
-            <label for="name" class="form-label">Nom du trick</label>
-            <input type="text" class="form-control" id="name" name="name" value="{{ trick.name }}">
-        </div>
-        <div class="mb-3">
-            <label for="content" class="form-label">Description du trick</label>
-            <textarea class="form-control" id="content" name="content" rows="5">{{ trick.content }}</textarea>
-        </div>
-        <div class="mb-3">
-            <label for="category" class="form-label">Catégorie</label>
-            <input type="text" class="form-control" id="category" name="category" value="{{ trick.category }}">
+    {{ form_start(form, {'attr': {'class': 'needs-validation', 'novalidate': 'novalidate'}}) }}
+
+    <div class="row mb-4">
+        <div class="col-md-6">
+            <div class="mb-3">
+                {{ form_label(form.name) }}
+                {{ form_widget(form.name, {'attr': {'class': 'form-control', 'placeholder': 'Entrez le nom du trick'}}) }}
+                {{ form_errors(form.name) }}
+            </div>
         </div>
 
-        <button type="submit" class="btn btn-primary">Enregistrer les modifications</button>
+        <div class="col-md-6">
+            <div class="mb-3">
+                {{ form_label(form.category) }}
+                {{ form_widget(form.category, {'attr': {'class': 'form-control', 'placeholder': 'Entrez la catégorie'}}) }}
+                {{ form_errors(form.category) }}
+            </div>
+        </div>
+    </div>
 
-        <a href="{{ path('app_home') }}" class="btn btn-dark">
+    <div class="mb-3">
+        {{ form_label(form.content) }}
+        {{ form_widget(form.content, {'attr': {'class': 'form-control', 'placeholder': 'Décrivez le trick ici...', 'rows': 5}}) }}
+        {{ form_errors(form.content) }}
+    </div>
+
+    <div class="text-center mt-5">
+        <button type="submit" class="btn btn-primary" title="Update"><i class="fa-solid fa-pen"></i></button>
+        
+        <!-- Bouton de suppression -->
+        <button type="button" class="btn btn-danger" data-bs-toggle="modal" data-bs-target="#deleteModal" title="Supprimer">
+            <i class="fa-solid fa-trash"></i>
+        </button>
+        
+        <a href="{{ path('app_home') }}" class="btn btn-dark" title="Annuler">
             <i class="fa-solid fa-xmark"></i>
         </a>
+    </div>
 
-    </form>
+    {{ form_end(form) }}
+
+    <!-- Modal de confirmation de suppression -->
+    <div class="modal fade" id="deleteModal" tabindex="-1" aria-labelledby="deleteModalLabel" aria-hidden="true">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="deleteModalLabel">Confirmation de suppression</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body">
+                    Êtes-vous sûr de vouloir supprimer le trick <strong>{{ trick.name }}</strong> ?
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Annuler</button>
+                    <form action="{{ path('trick_delete', {id: trick.id}) }}" method="post">
+                        <input type="hidden" name="_token" value="{{ csrf_token('delete' ~ trick.id) }}">
+                        <button type="submit" class="btn btn-danger">Supprimer</button>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
 </div>
 {% endblock %}

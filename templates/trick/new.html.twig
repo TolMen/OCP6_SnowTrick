@@ -33,6 +33,7 @@
                 {{ form_widget(form.name, {'attr': {'class': 'form-control', 'placeholder': 'Entrez le nom du trick'}}) }}
                 {{ form_errors(form.name) }}
                 {{ form_errors(form) }} {#  Affiche si le nom du trick existe deja #}
+
             </div>
         </div>
 
@@ -52,8 +53,8 @@
     </div>
 
     <div class="text-center mt-5">
-        <button type="submit" class="btn btn-primary">Ajouter le trick</button>
-        <a href="{{ path('app_home') }}" class="btn btn-dark">
+        <button type="submit" class="btn btn-primary" title="Ajouter"><i class="fa-solid fa-pen"></i></button>
+        <a href="{{ path('app_home') }}" class="btn btn-dark" title="Annuler">
             <i class="fa-solid fa-xmark"></i>
         </a>
     </div>

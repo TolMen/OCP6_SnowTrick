@@ -6,6 +6,7 @@ use App\Entity\Images;
 use App\Entity\Videos;
 use App\Entity\Trick;
 use App\Form\TrickType;
+use App\Form\TrickEditType;
 use Symfony\Component\Form\FormError;
 use Symfony\Component\HttpFoundation\File\UploadedFile;
 use Doctrine\ORM\EntityManagerInterface;
@@ -118,12 +119,38 @@ class TrickController extends AbstractController
 
     #[Route('/trick/edit/{id}', name: 'trick_edit')]
     #[IsGranted('ROLE_USER')]
-    public function editTrick(Trick $trick): Response
+    public function editTrick(Request $request, Trick $trick, EntityManagerInterface $entityManager): Response
     {
+        // Créer le formulaire pour modifier le trick
+        $form = $this->createForm(TrickEditType::class, $trick);
+        $form->handleRequest($request);
+
+        if ($form->isSubmitted() && $form->isValid()) {
+            // Vérification de l'existence du nom dans la base de données
+            $existingTrick = $entityManager->getRepository(Trick::class)->findOneBy(['name' => $trick->getName()]);
+
+            if ($existingTrick && $existingTrick->getId() !== $trick->getId()) {
+                $form->addError(new FormError('Ce nom de trick existe déjà.'));
+                return $this->render('trick/edit.html.twig', [
+                    'form' => $form->createView(),
+                    'trick' => $trick,
+                ]);
+            }
+
+            // Mise à jour des champs
+            $entityManager->flush();
+
+            $this->addFlash('success', 'Le trick a été mis à jour avec succès.');
+
+            return $this->redirectToRoute('app_home');
+        }
+
         return $this->render('trick/edit.html.twig', [
+            'form' => $form->createView(),
             'trick' => $trick,
         ]);
     }
+
 
     #[Route('/trick/update/{id}', name: 'trick_update', methods: ['POST'])]
     #[IsGranted('ROLE_USER')]

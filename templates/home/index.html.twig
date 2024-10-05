@@ -125,11 +125,11 @@
                             Êtes-vous sûr de vouloir supprimer le trick <strong>{{ trick.name }}</strong> ?
                         </div>
                         <div class="modal-footer">
-                            <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Annuler</button>
                             <form action="{{ path('trick_delete', {id: trick.id}) }}" method="post">
                                 <input type="hidden" name="_token" value="{{ csrf_token('delete' ~ trick.id) }}">
                                 <button type="submit" class="btn btn-danger">Supprimer</button>
                             </form>
+                            <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Annuler</button>
                         </div>
                     </div>
                 </div>
@@ -140,7 +140,7 @@
     <!-- Ajout des boutons "Voir Plus" et "Créer un Trick" ici -->
     <div class="mt-4">
         {% if tricks|length > 8 %}
-            <button id="show-more-btn" class="btn btn-primary">Voir plus</button>
+            <button id="show-more-btn" class="btn btn-primary"><i class="fa-solid fa-eye"></i> Tricks</button>
         {% endif %}
         {% if is_granted('ROLE_USER') %}
             <a href="{{ path('trick_new') }}" class="btn btn-success ms-2">
