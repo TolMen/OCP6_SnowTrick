@@ -1,0 +1,63 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Créer un nouveau trick{% endblock %}
+
+{% block body %}
+<div class="container mt-5 d-flex justify-content-center align-items-center flex-column" style="height: 75vh;">
+    <h2 class="mb-4 text-center">Création d'un nouveau trick</h2>
+
+    {{ form_start(form, {'attr': {'class': 'needs-validation', 'novalidate': 'novalidate'}}) }}
+
+    <div class="row mb-4">
+        <div class="col-md-6">
+            <div class="mb-3">
+                {{ form_label(form.image) }}
+                {{ form_widget(form.image, {'attr': {'class': 'form-control' }}) }}
+                {{ form_errors(form.image) }}
+            </div>
+        </div>
+
+        <div class="col-md-6">
+            <div class="mb-3">
+                {{ form_label(form.embedCode) }}
+                {{ form_widget(form.embedCode, {'attr': {'class': 'form-control', 'placeholder': 'Entrez l\'URL de la vidéo ici...' }}) }}
+                {{ form_errors(form.embedCode) }}
+            </div>
+        </div>
+    </div>
+
+    <div class="row mb-4">
+        <div class="col-md-6">
+            <div class="mb-3">
+                {{ form_label(form.name) }}
+                {{ form_widget(form.name, {'attr': {'class': 'form-control', 'placeholder': 'Entrez le nom du trick'}}) }}
+                {{ form_errors(form.name) }}
+                {{ form_errors(form) }} {#  Affiche si le nom du trick existe deja #}
+            </div>
+        </div>
+
+        <div class="col-md-6">
+            <div class="mb-3">
+                {{ form_label(form.category) }}
+                {{ form_widget(form.category, {'attr': {'class': 'form-control', 'placeholder': 'Entrez la catégorie'}}) }}
+                {{ form_errors(form.category) }}
+            </div>
+        </div>
+    </div>
+
+    <div class="mb-3">
+        {{ form_label(form.content) }}
+        {{ form_widget(form.content, {'attr': {'class': 'form-control', 'placeholder': 'Décrivez le trick ici...', 'rows': 5}}) }}
+        {{ form_errors(form.content) }}
+    </div>
+
+    <div class="text-center mt-5">
+        <button type="submit" class="btn btn-primary">Ajouter le trick</button>
+        <a href="{{ path('app_home') }}" class="btn btn-dark">
+            <i class="fa-solid fa-xmark"></i>
+        </a>
+    </div>
+
+    {{ form_end(form) }}
+</div>
+{% endblock %}
