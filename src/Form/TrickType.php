@@ -23,6 +23,7 @@ class TrickType extends AbstractType
                 'mapped' => false, // Ce champ n'est pas mappé à l'entité Trick
                 'required' => true, // Une image est obligatoire
                 'constraints' => [
+                    new NotBlank(['message' => 'Ce champ est obligatoire.']), // Ajout de la contrainte NotBlank
                     new File([
                         'maxSize' => '1024k',
                         'mimeTypes' => [
