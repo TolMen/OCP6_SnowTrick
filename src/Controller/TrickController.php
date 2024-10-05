@@ -79,7 +79,7 @@ class TrickController extends AbstractController
                 $entityManager->flush();
             }
 
-            $this->addFlash('success', 'Le trick, l\'image et la vidéo ont été créés avec succès.');
+            $this->addFlash('success', 'Le trick a été ajouté avec succès !');
             return $this->redirectToRoute('app_home'); 
         }
 
