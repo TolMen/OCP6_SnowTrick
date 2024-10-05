@@ -3,6 +3,7 @@
 namespace App\Controller;
 
 use App\Entity\Images;
+use App\Entity\Videos;
 use App\Entity\Trick;
 use App\Form\TrickType;
 use Symfony\Component\HttpFoundation\File\UploadedFile;
@@ -66,7 +67,19 @@ class TrickController extends AbstractController
             $entityManager->persist($trick);
             $entityManager->flush();
 
-            $this->addFlash('success', 'Le trick et l\'image ont été créés avec succès.');
+            $embedCode = $form->get('embedCode')->getData();
+
+            if ($embedCode) {
+                $video = new Videos();
+                $video->setEmbedCode($embedCode);
+                $video->setDateAdd(new \DateTime());
+                $video->setIdTrick($trick);
+
+                $entityManager->persist($video);
+                $entityManager->flush();
+            }
+
+            $this->addFlash('success', 'Le trick, l\'image et la vidéo ont été créés avec succès.');
             return $this->redirectToRoute('app_home'); 
         }
 

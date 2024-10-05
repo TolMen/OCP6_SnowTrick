@@ -15,6 +15,12 @@
         </div>
 
         <div class="mb-3">
+            {{ form_label(form.embedCode) }}
+            {{ form_widget(form.embedCode, {'attr': {'class': 'form-control', 'placeholder': 'Entrez l\'URL de la vidéo ici...' }}) }}
+            {{ form_errors(form.embedCode) }}
+        </div>
+
+        <div class="mb-3">
             {{ form_label(form.name) }}
             {{ form_widget(form.name, {'attr': {'class': 'form-control', 'placeholder': 'Entrez le nom du trick'}}) }}
             {{ form_errors(form.name) }}

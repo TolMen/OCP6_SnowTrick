@@ -19,7 +19,7 @@ class TrickType extends AbstractType
     {
         $builder
             ->add('image', FileType::class, [
-                'label' => 'Image (jpg, png, gif)',
+                'label' => 'Image (jpg, png, gif) / (Obligatoire)',
                 'mapped' => false, // Ce champ n'est pas mappé à l'entité Trick
                 'required' => true, // Une image est obligatoire
                 'constraints' => [
@@ -39,22 +39,31 @@ class TrickType extends AbstractType
                     'class' => 'form-control',
                 ],
             ])
+            ->add('embedCode', TextType::class, [
+                'label' => 'URL Vidéo (Optionnel)',
+                'mapped' => false,
+                'required' => false,
+                'attr' => [
+                    'accept' => 'video/*',
+                    'class' => 'form-control',
+                ]
+            ])
             ->add('name', TextType::class, [
-                'label' => 'Nom',
+                'label' => 'Nom (Obligatoire)',
                 'attr' => ['placeholder' => 'Entrez le nom du trick'],
                 'constraints' => [
                     new NotBlank(['message' => 'Ce champ est obligatoire.']),
                 ],
             ])
             ->add('content', TextareaType::class, [
-                'label' => 'Description',
+                'label' => 'Description (Obligatoire)',
                 'attr' => ['placeholder' => 'Décrivez le trick ici...', 'rows' => 5],
                 'constraints' => [
                     new NotBlank(['message' => 'Ce champ est obligatoire.']),
                 ],
             ])
             ->add('category', TextType::class, [
-                'label' => 'Catégorie',
+                'label' => 'Catégorie (Obligatoire)',
                 'attr' => ['placeholder' => 'Entrez la catégorie'],
                 'constraints' => [
                     new NotBlank(['message' => 'Ce champ est obligatoire.']),
