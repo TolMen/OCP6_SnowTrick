@@ -10,10 +10,10 @@
 
         <div class="mb-3">
             {{ form_label(form.image) }}
-            {{ form_widget(form.image, {'attr': {'class': 'form-control'}}) }}
+            {{ form_widget(form.image, {'attr': {'class': 'form-control' }}) }}
             {{ form_errors(form.image) }}
         </div>
-        
+
         <div class="mb-3">
             {{ form_label(form.name) }}
             {{ form_widget(form.name, {'attr': {'class': 'form-control', 'placeholder': 'Entrez le nom du trick'}}) }}
@@ -33,6 +33,11 @@
         </div>
 
         <button type="submit" class="btn btn-primary">Ajouter le trick</button>
+
+        <a href="{{ path('app_home') }}" class="btn btn-dark">
+            <i class="fa-solid fa-xmark"></i>
+        </a>
+
     {{ form_end(form) }}
 </div>
 {% endblock %}

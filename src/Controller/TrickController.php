@@ -5,6 +5,7 @@ namespace App\Controller;
 use App\Entity\Images;
 use App\Entity\Trick;
 use App\Form\TrickType;
+use Symfony\Component\HttpFoundation\File\UploadedFile;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Request;
@@ -32,28 +33,29 @@ class TrickController extends AbstractController
 
         $form->handleRequest($request);
         if ($form->isSubmitted() && $form->isValid()) {
-            // Gérer l'image
-            $imageFile = $form->get('image')->getData();
-            if ($imageFile) {
+            // Gérer le fichier image
+            $imageFile = $form->get('image')->getData(); // Récupérer le fichier d'image
+
+            if ($imageFile instanceof UploadedFile) {
                 // Générer un nom de fichier unique
                 $originalFilename = pathinfo($imageFile->getClientOriginalName(), PATHINFO_FILENAME);
                 $safeFilename = $slugger->slug($originalFilename);
-                $newFilename = $safeFilename.'-'.uniqid().'.'.$imageFile->guessExtension();
+                $newFilename = $safeFilename . '-' . uniqid() . '.' . $imageFile->guessExtension();
 
-                
-                $imageFile->move(
-                    $this->getParameter('images_directory'),
-                    $newFilename
-                );
+                // Déplacer le fichier dans le bon dossier
+                $imageFile->move($this->getParameter('images_directory'), $newFilename);
 
-                
+                // Créer une nouvelle instance d'Images
                 $image = new Images();
                 $image->setImgURL('uploads/images/imgFigure/' . $newFilename);
                 $image->setDateCreated(new \DateTime());
                 $image->setIdTrick($trick);
 
-                // Enregistrer l'image dans la base de données
+                // Persister l'image
                 $entityManager->persist($image);
+            } else {
+                $this->addFlash('danger', 'Vous devez ajouter une image.');
+                return $this->redirectToRoute('trick_new');
             }
 
             // Assigner l'utilisateur connecté au trick
@@ -64,14 +66,15 @@ class TrickController extends AbstractController
             $entityManager->persist($trick);
             $entityManager->flush();
 
-            $this->addFlash('success', 'Le trick a été créé avec succès.');
-            return $this->redirectToRoute('app_home'); // Rediriger vers la page d'accueil
+            $this->addFlash('success', 'Le trick et l\'image ont été créés avec succès.');
+            return $this->redirectToRoute('app_home'); 
         }
 
         return $this->render('trick/new.html.twig', [
             'form' => $form->createView(),
         ]);
     }
+
 
     #[Route('/trick/delete/{id}', name: 'trick_delete', methods: ['POST'])]
     #[IsGranted('ROLE_USER')]

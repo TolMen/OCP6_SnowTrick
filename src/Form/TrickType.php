@@ -5,11 +5,12 @@ namespace App\Form;
 use App\Entity\Trick;
 use Symfony\Component\Form\AbstractType;
 use Symfony\Component\Form\Extension\Core\Type\TextType;
-use Symfony\Component\Form\Extension\Core\Type\FileType;
 use Symfony\Component\Form\Extension\Core\Type\TextareaType;
 use Symfony\Component\Form\FormBuilderInterface;
 use Symfony\Component\OptionsResolver\OptionsResolver;
 use Symfony\Component\Validator\Constraints\NotBlank;
+use Symfony\Component\Validator\Constraints\Count;
+use Symfony\Component\Form\Extension\Core\Type\FileType;
 use Symfony\Component\Validator\Constraints\File;
 
 class TrickType extends AbstractType
@@ -19,9 +20,9 @@ class TrickType extends AbstractType
         $builder
             ->add('image', FileType::class, [
                 'label' => 'Image (jpg, png, gif)',
-                'mapped' => false,
+                'mapped' => false, // Ce champ n'est pas mappé à l'entité Trick
+                'required' => true, // Une image est obligatoire
                 'constraints' => [
-                    new NotBlank(['message' => 'Ce champ est obligatoire.']),
                     new File([
                         'maxSize' => '1024k',
                         'mimeTypes' => [
@@ -30,7 +31,11 @@ class TrickType extends AbstractType
                             'image/gif',
                         ],
                         'mimeTypesMessage' => 'Veuillez télécharger une image valide (jpg, png, gif).',
-                    ])
+                    ]),
+                ],
+                'attr' => [
+                    'accept' => 'image/*',
+                    'class' => 'form-control',
                 ],
             ])
             ->add('name', TextType::class, [
@@ -53,8 +58,7 @@ class TrickType extends AbstractType
                 'constraints' => [
                     new NotBlank(['message' => 'Ce champ est obligatoire.']),
                 ],
-            ])
-        ;
+            ]);
     }
 
     public function configureOptions(OptionsResolver $resolver): void
@@ -64,4 +68,3 @@ class TrickType extends AbstractType
         ]);
     }
 }
-
