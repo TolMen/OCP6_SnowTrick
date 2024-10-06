@@ -6,6 +6,7 @@ use App\Entity\Images;
 use App\Entity\Videos;
 use App\Entity\Trick;
 use App\Form\TrickType;
+use App\Form\TrickEditType;
 use Symfony\Component\Form\FormError;
 use Symfony\Component\HttpFoundation\File\UploadedFile;
 use Doctrine\ORM\EntityManagerInterface;
@@ -108,22 +109,107 @@ class TrickController extends AbstractController
         if ($this->isCsrfTokenValid('delete' . $trick->getId(), $request->request->get('_token'))) {
             $entityManager->remove($trick);
             $entityManager->flush();
-            $this->addFlash('success', 'Le trick a été supprimé avec succès.');
+            $this->addFlash('success', 'Le trick a été supprimé avec succès !');
         } else {
-            $this->addFlash('danger', 'Jeton CSRF invalide. Impossible de supprimer le trick.');
+            $this->addFlash('danger', 'Jeton CSRF invalide. Impossible de supprimer le trick !');
         }
 
         return $this->redirectToRoute('app_home');
     }
 
+
+
+
+
+
+    
     #[Route('/trick/edit/{id}', name: 'trick_edit')]
     #[IsGranted('ROLE_USER')]
-    public function editTrick(Trick $trick): Response
+    public function editTrick(Request $request, Trick $trick, EntityManagerInterface $entityManager, SluggerInterface $slugger): Response
     {
+        $form = $this->createForm(TrickEditType::class, $trick);
+        $form->handleRequest($request);
+
+        if ($form->isSubmitted() && $form->isValid()) {
+            // Vérifier le nom du trick
+            $existingTrick = $entityManager->getRepository(Trick::class)->findOneBy(['name' => $trick->getName()]);
+            if ($existingTrick && $existingTrick->getId() !== $trick->getId()) {
+                $form->addError(new FormError('Ce nom de trick existe déjà.'));
+                return $this->render('trick/edit.html.twig', [
+                    'form' => $form->createView(),
+                    'trick' => $trick,
+                ]);
+            }
+
+            // Récupérer les URLs des vidéos soumises depuis le formulaire
+            $submittedVideoUrls = $form->get('videos')->getData(); // URLs soumises
+
+            // Liste des vidéos existantes (dans la base de données)
+            $existingVideos = $trick->getVideos()->toArray(); // Convertir la collection en tableau
+
+            // **Étape 1 : Traiter les vidéos existantes**
+            foreach ($existingVideos as $existingVideo) {
+                $existingUrl = $existingVideo->getEmbedCode();
+                if (in_array($existingUrl, $submittedVideoUrls)) {
+                    // Si l'URL existe toujours dans le formulaire, on ne la supprime pas
+                    $submittedVideoUrls = array_diff($submittedVideoUrls, [$existingUrl]); // Supprimer l'URL de la liste des vidéos soumises
+                } else {
+                    // Si l'URL n'existe plus dans le formulaire, on la supprime
+                    $entityManager->remove($existingVideo);
+                }
+            }
+
+            // **Étape 2 : Ajouter les nouvelles vidéos**
+            foreach ($submittedVideoUrls as $newVideoUrl) {
+                // Si l'URL soumise n'est pas déjà dans la base de données, on l'ajoute
+                $video = new Videos();
+                $video->setEmbedCode(trim($newVideoUrl));
+                $video->setDateAdd(new \DateTime());
+                $video->setIdTrick($trick); // Associer la vidéo au Trick
+                $entityManager->persist($video); // Persister la nouvelle vidéo
+            }
+
+            // **Étape 3 : Gérer l'image (si une nouvelle image est uploadée)**
+            $imageFile = $form->get('image')->getData(); // Récupérer le fichier d'image
+            if ($imageFile instanceof UploadedFile) {
+                $originalFilename = pathinfo($imageFile->getClientOriginalName(), PATHINFO_FILENAME);
+                $safeFilename = $slugger->slug($originalFilename);
+                $newFilename = $safeFilename . '-' . uniqid() . '.' . $imageFile->guessExtension();
+
+                // Déplacer le fichier dans le bon dossier
+                $imageFile->move($this->getParameter('images_directory'), $newFilename);
+
+                // Créer ou mettre à jour l'image
+                $image = new Images();
+                $image->setImgURL('uploads/images/imgFigure/' . $newFilename);
+                $image->setDateCreated(new \DateTime());
+                $image->setIdTrick($trick);
+
+                $entityManager->persist($image);
+            }
+
+            // Mettre à jour la date de modification
+            $trick->setDateUpdated(new \DateTime());
+
+            // Sauvegarder toutes les modifications (le Trick, les vidéos, et l'image)
+            $entityManager->flush();
+
+            // Message de succès
+            $this->addFlash('success', 'Le trick a été mis à jour avec succès !');
+
+            return $this->redirectToRoute('app_home');
+        }
+
         return $this->render('trick/edit.html.twig', [
+            'form' => $form->createView(),
             'trick' => $trick,
         ]);
     }
+
+
+
+
+
 
     #[Route('/trick/update/{id}', name: 'trick_update', methods: ['POST'])]
     #[IsGranted('ROLE_USER')]
@@ -144,7 +230,7 @@ class TrickController extends AbstractController
         $entityManager->persist($trick);
         $entityManager->flush();
 
-        $this->addFlash('success', 'Le trick a été mis à jour avec succès.');
+        $this->addFlash('success', 'Le trick a été mis à jour avec succès !');
 
         return $this->redirectToRoute('app_home');
     }

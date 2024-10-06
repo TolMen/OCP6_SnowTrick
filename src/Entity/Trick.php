@@ -39,9 +39,13 @@ class Trick
     #[ORM\OneToMany(mappedBy: 'id_trick', targetEntity: Images::class)]
     private Collection $images;
 
+    #[ORM\OneToMany(mappedBy: 'id_trick', targetEntity: Videos::class, cascade: ['persist', 'remove'], orphanRemoval: true)]
+    private Collection $videos;
+
     public function __construct()
     {
         $this->images = new ArrayCollection();
+        $this->videos = new ArrayCollection();
     }
 
     public function getId(): ?int
@@ -118,6 +122,33 @@ class Trick
     public function getImages(): Collection
     {
         return $this->images;
+    }
+
+    public function getVideos(): Collection
+    {
+        return $this->videos;
+    }
+
+    public function addVideo(Videos $video): static
+    {
+        if (!$this->videos->contains($video)) {
+            $this->videos->add($video);
+            $video->setIdTrick($this); // Définissez la relation inverse
+        }
+
+        return $this;
+    }
+
+    public function removeVideo(Videos $video): static
+    {
+        if ($this->videos->removeElement($video)) {
+            // Définissez la relation inverse à null
+            if ($video->getIdTrick() === $this) {
+                $video->setIdTrick(null);
+            }
+        }
+
+        return $this;
     }
 
 }
