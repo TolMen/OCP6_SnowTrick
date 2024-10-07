@@ -9,18 +9,25 @@
         {# Section d'en-tête avec image de fond moins zoomée #}
         <div class="bg-image" style="background-image: url('{{ asset(trick.images.first.imgURL) }}'); height: 400px; background-size: contain; background-position: center; background-repeat: no-repeat;">
         </div>
-        
-        {# Affichage du nom du trick sous l'image #}
-        <h1 class="text-center mt-3">{{ trick.name }}</h1>
 
-        <p class="mt-3"><strong>Catégorie : </strong>{{ trick.category }}</p>
-        <h3><strong>Description :</strong></h3>
-        <p>{{ trick.content|nl2br }}</p>
+        {# Affichage du nom du trick et de la catégorie en dessous #}
+        <h1 class="text-center mt-3">{{ trick.name }}</h1>
+        <p class="text-center mt-1"><strong>Catégorie :</strong> {{ trick.category }}</p>
+
+        {# Ligne de séparation avant la description #}
+        <hr class="my-4">
+
+        {# Description centrée avec un titre plus petit #}
+        <h4 class="text-center mb-4"><strong>Description</strong></h4>
+        <p class="text-center">{{ trick.content|nl2br }}</p>
+
+        {# Ligne de séparation après la description #}
+        <hr class="my-4">
 
         <p class="mt-2"><strong>Médias</strong></p>
-        
-        {# Affichage de toutes les images avec une taille uniforme #}
-        <div class="row mb-4">
+
+        {# Affichage de toutes les images avec une taille uniforme et un écart réduit avec les vidéos #}
+        <div class="row mb-2">
             {% for image in trick.images %}
                 <div class="col-md-3 d-flex">
                     <img src="{{ asset(image.imgURL) }}" class="img-fluid" style="max-height: 75%;" alt="{{ trick.name }}">
@@ -30,12 +37,12 @@
             {% endfor %}
         </div>
 
-        {# Affichage de toutes les vidéos #}
-        <div class="row">
-            {% for video in trick.videos %}
-                <div class="col-md-6 mb-4">
-                    <div class="embed-responsive embed-responsive-16by9">
-                        {{ video.embedCode|raw }} {# Utilisez |raw pour afficher le code d'intégration #}
+        {# Affichage de toutes les vidéos avec une taille réduite et moins d'écart avec les images #}
+        <div class="row mt-2">
+            {% for videoEmbedCode in videosWithEmbedCode %}
+                <div class="col-md-6 mb-3">
+                    <div class="embed-responsive">
+                        {{ videoEmbedCode|raw }} {# Code d'intégration de la vidéo #}
                     </div>
                 </div>
             {% else %}
@@ -44,6 +51,6 @@
         </div>
 
         {# Bouton pour revenir à la page d'accueil #}
-        <a href="{{ path('app_home') }}" class="btn btn-primary mt-4"><i class="fa-solid fa-house"></i> Retour</a>
+        <a href="{{ path('app_home') }}" class="btn btn-primary"><i class="fa-solid fa-house"></i> Retour</a>
     </div>
 {% endblock %}

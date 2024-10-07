@@ -36,12 +36,31 @@ class TrickController extends AbstractController
         $trick = $trickRepository->findOneBy(['slug' => $slug]); // Trouver le trick par son slug
 
         if (!$trick) {
-            throw $this->createNotFoundException('Trick not found');
+            throw $this->createNotFoundException('Aucun trick trouvé !');
+        }
+
+        $videosWithEmbedCode = [];
+        foreach ($trick->getVideos() as $video) {
+            $videosWithEmbedCode[] = $this->getEmbedCode($video->getEmbedCode());
         }
         
         return $this->render('trick/show.html.twig', [
             'trick' => $trick,
+            'videosWithEmbedCode'=> $videosWithEmbedCode,
         ]);
+    }
+
+    private function getEmbedCode(string $url): string
+    {
+        preg_match('/(?:https?:\/\/)?(?:www\.)?(?:youtu\.be\/|(?:www\.)?youtube\.com\/(?:embed\/|v\/|watch\?v=|watch\?.+&v=))([^&\n]{11})/', $url, $matches);
+        
+        if (isset($matches[1])) {
+            $videoId = $matches[1];
+            // Retourner le code d'intégration
+            return '<iframe width="560" height="315" src="https://www.youtube.com/embed/' . $videoId . '" frameborder="0" allowfullscreen></iframe>';
+        }
+        
+        return ''; // Retourner une chaîne vide si l'URL n'est pas valide
     }
 
 
