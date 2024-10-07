@@ -1,0 +1,49 @@
+{# templates/trick/show.html.twig #}
+
+{% extends 'base.html.twig' %}
+
+{% block title %}{{ trick.name }}{% endblock %}
+
+{% block body %}
+    <div class="container mt-5">
+        {# Section d'en-tête avec image de fond moins zoomée #}
+        <div class="bg-image" style="background-image: url('{{ asset(trick.images.first.imgURL) }}'); height: 400px; background-size: contain; background-position: center; background-repeat: no-repeat;">
+        </div>
+        
+        {# Affichage du nom du trick sous l'image #}
+        <h1 class="text-center mt-3">{{ trick.name }}</h1>
+
+        <p class="mt-3"><strong>Catégorie : </strong>{{ trick.category }}</p>
+        <h3><strong>Description :</strong></h3>
+        <p>{{ trick.content|nl2br }}</p>
+
+        <p class="mt-2"><strong>Médias</strong></p>
+        
+        {# Affichage de toutes les images avec une taille uniforme #}
+        <div class="row mb-4">
+            {% for image in trick.images %}
+                <div class="col-md-3 d-flex">
+                    <img src="{{ asset(image.imgURL) }}" class="img-fluid" style="max-height: 75%;" alt="{{ trick.name }}">
+                </div>
+            {% else %}
+                <p>Aucune image disponible</p>
+            {% endfor %}
+        </div>
+
+        {# Affichage de toutes les vidéos #}
+        <div class="row">
+            {% for video in trick.videos %}
+                <div class="col-md-6 mb-4">
+                    <div class="embed-responsive embed-responsive-16by9">
+                        {{ video.embedCode|raw }} {# Utilisez |raw pour afficher le code d'intégration #}
+                    </div>
+                </div>
+            {% else %}
+                <p>Aucune vidéo disponible</p>
+            {% endfor %}
+        </div>
+
+        {# Bouton pour revenir à la page d'accueil #}
+        <a href="{{ path('app_home') }}" class="btn btn-primary mt-4"><i class="fa-solid fa-house"></i> Retour</a>
+    </div>
+{% endblock %}

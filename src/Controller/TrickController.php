@@ -7,6 +7,7 @@ use App\Entity\Videos;
 use App\Entity\Trick;
 use App\Form\TrickType;
 use App\Form\TrickEditType;
+use App\Repository\TrickRepository;
 use Symfony\Component\Form\FormError;
 use Symfony\Component\HttpFoundation\File\UploadedFile;
 use Doctrine\ORM\EntityManagerInterface;
@@ -26,6 +27,25 @@ class TrickController extends AbstractController
             'controller_name' => 'TrickController',
         ]);
     }
+
+
+
+    #[Route('/trick/{slug}', name: 'trick_show', requirements: ['slug' => '(?!new)[a-zA-Z0-9\-]+'])]
+    public function showTrick(string $slug, TrickRepository $trickRepository): Response
+    {
+        $trick = $trickRepository->findOneBy(['slug' => $slug]); // Trouver le trick par son slug
+
+        if (!$trick) {
+            throw $this->createNotFoundException('Trick not found');
+        }
+        
+        return $this->render('trick/show.html.twig', [
+            'trick' => $trick,
+        ]);
+    }
+
+
+
 
     #[Route('/trick/new', name: 'trick_new')]
     #[IsGranted('ROLE_USER')]
@@ -70,6 +90,8 @@ class TrickController extends AbstractController
                 $this->addFlash('danger', 'Vous devez ajouter une image.');
                 return $this->redirectToRoute('trick_new');
             }
+
+            $trick->generateSlug($slugger);
 
             // Assigner l'utilisateur connecté au trick
             $trick->setUser($this->getUser());
@@ -141,6 +163,7 @@ class TrickController extends AbstractController
                 ]);
             }
 
+
             // Récupérer les URLs des vidéos soumises depuis le formulaire
             $submittedVideoUrls = $form->get('videos')->getData(); // URLs soumises
 
@@ -187,6 +210,8 @@ class TrickController extends AbstractController
 
                 $entityManager->persist($image);
             }
+
+            $trick->generateSlug($slugger); 
 
             // Mettre à jour la date de modification
             $trick->setDateUpdated(new \DateTime());

@@ -50,7 +50,11 @@
                     {% endif %}
                     <div class="card-body">
                         <div class="d-flex justify-content-between align-items-center">
-                            <h5 class="card-title mb-0">{{ trick.name }}</h5>
+                            <h5 class="card-title mb-0">{{ trick.name }}
+                                <a href="{{ path('trick_show', {slug: trick.slug}) }}" class="text-secondary" title="Voir les détails" style="margin-left: 5px;">
+                                    <i class="fa-solid fa-eye"></i>
+                                </a>
+                            </h5>
                             {% if is_granted('ROLE_USER') %}
                                 <div>
                                     <a href="{{ path('trick_edit', {id: trick.id}) }}" class="text-primary mx-2" title="Éditer">
@@ -98,7 +102,11 @@
                     {% endif %}
                     <div class="card-body">
                         <div class="d-flex justify-content-between align-items-center">
-                            <h5 class="card-title mb-0">{{ trick.name }}</h5>
+                            <h5 class="card-title mb-0">{{ trick.name }}
+                                <a href="{{ path('trick_show', {slug: trick.slug}) }}" class="text-secondary" title="Voir les détails" style="margin-left: 5px;">
+                                    <i class="fa-solid fa-eye"></i>
+                                </a>
+                            </h5>
                             {% if is_granted('ROLE_USER') %}
                                 <div>
                                     <a href="{{ path('trick_edit', {id: trick.id}) }}" class="text-primary mx-2" title="Éditer">
