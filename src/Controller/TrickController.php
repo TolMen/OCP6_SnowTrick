@@ -8,6 +8,8 @@ use App\Entity\Trick;
 use App\Form\TrickType;
 use App\Form\TrickEditType;
 use App\Repository\TrickRepository;
+use App\Entity\Commentaire;
+use Symfony\Component\Form\Extension\Core\Type\TextareaType;
 use Symfony\Component\Form\FormError;
 use Symfony\Component\HttpFoundation\File\UploadedFile;
 use Doctrine\ORM\EntityManagerInterface;
@@ -28,27 +30,62 @@ class TrickController extends AbstractController
         ]);
     }
 
-
-
     #[Route('/trick/{slug}', name: 'trick_show', requirements: ['slug' => '(?!new)[a-zA-Z0-9\-]+'])]
-    public function showTrick(string $slug, TrickRepository $trickRepository): Response
-    {
-        $trick = $trickRepository->findOneBy(['slug' => $slug]); // Trouver le trick par son slug
+    public function showTrick(
+        string $slug,
+        TrickRepository $trickRepository,
+        Request $request,
+        EntityManagerInterface $entityManager
+    ): Response {
+        $trick = $trickRepository->findOneBy(['slug' => $slug]);
 
         if (!$trick) {
             throw $this->createNotFoundException('Aucun trick trouvé !');
         }
 
+        // Récupérer les vidéos avec le code d'intégration
         $videosWithEmbedCode = [];
         foreach ($trick->getVideos() as $video) {
             $videosWithEmbedCode[] = $this->getEmbedCode($video->getEmbedCode());
         }
-        
+
+        // Récupérer tous les commentaires
+        $commentaires = $entityManager->getRepository(Commentaire::class)
+            ->findBy(['id_trick' => $trick], ['dateCreated' => 'DESC']); // Obtenir tous les commentaires
+
+        // Création d'un nouveau commentaire
+        $commentaire = new Commentaire();
+        $form = $this->createFormBuilder($commentaire)
+            ->add('message', TextareaType::class, [
+                'label' => 'Laissez un commentaire',
+                'attr' => ['class' => 'form-control']
+            ])
+            ->getForm();
+
+        $form->handleRequest($request);
+
+        if ($form->isSubmitted() && $form->isValid()) {
+            $commentaire->setIdUser($this->getUser());
+            $commentaire->setIdTrick($trick);
+            $commentaire->setDateCreated(new \DateTime());
+
+            $entityManager->persist($commentaire);
+            $entityManager->flush();
+
+            $this->addFlash('success', 'Votre commentaire a été ajouté avec succès.');
+
+            return $this->redirectToRoute('trick_show', ['slug' => $slug]);
+        }
+
         return $this->render('trick/show.html.twig', [
             'trick' => $trick,
-            'videosWithEmbedCode'=> $videosWithEmbedCode,
+            'videosWithEmbedCode' => $videosWithEmbedCode,
+            'commentaires' => $commentaires, // Passer tous les commentaires sans pagination
+            'form' => $form->createView(),
         ]);
     }
+
+
 
     private function getEmbedCode(string $url): string
     {
@@ -148,6 +185,15 @@ class TrickController extends AbstractController
     public function deleteTrick(Trick $trick, EntityManagerInterface $entityManager, Request $request): Response
     {
         if ($this->isCsrfTokenValid('delete' . $trick->getId(), $request->request->get('_token'))) {
+
+            // Récupérer tous les commentaires associés au trick
+            $commentaires = $entityManager->getRepository(Commentaire::class)->findBy(['id_trick' => $trick]);
+
+            // Supprimer tous les commentaires
+            foreach ($commentaires as $commentaire) {
+                $entityManager->remove($commentaire);
+            }
+
             $entityManager->remove($trick);
             $entityManager->flush();
             $this->addFlash('success', 'Le trick a été supprimé avec succès !');
