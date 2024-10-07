@@ -7,6 +7,7 @@ use Doctrine\DBAL\Types\Types;
 use Doctrine\ORM\Mapping as ORM;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
+use Symfony\Component\String\Slugger\SluggerInterface;
 
 #[ORM\Entity(repositoryClass: TrickRepository::class)]
 class Trick
@@ -18,6 +19,9 @@ class Trick
 
     #[ORM\Column(length: 255)]
     private ?string $name = null;
+
+    #[ORM\Column(type:"string", length: 255, unique: true)]
+    private $slug;
 
     #[ORM\Column(type: Types::TEXT)]
     private ?string $content = null;
@@ -62,6 +66,24 @@ class Trick
     {
         $this->name = $name;
         return $this;
+    }
+
+    public function getSlug(): ?string
+    {
+        return $this->slug;
+    }
+
+    public function setSlug(string $slug): self
+    {
+        $this->slug = $slug;
+
+        return $this;
+    }
+
+    // Optionnel: méthode pour générer le slug à partir du nom
+    public function generateSlug(SluggerInterface $slugger): void
+    {
+        $this->slug = $slugger->slug($this->name)->lower();
     }
 
     public function getContent(): ?string

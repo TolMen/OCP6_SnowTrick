@@ -7,6 +7,7 @@ use App\Entity\Videos;
 use App\Entity\Trick;
 use App\Form\TrickType;
 use App\Form\TrickEditType;
+use App\Repository\TrickRepository;
 use Symfony\Component\Form\FormError;
 use Symfony\Component\HttpFoundation\File\UploadedFile;
 use Doctrine\ORM\EntityManagerInterface;
@@ -26,6 +27,44 @@ class TrickController extends AbstractController
             'controller_name' => 'TrickController',
         ]);
     }
+
+
+
+    #[Route('/trick/{slug}', name: 'trick_show', requirements: ['slug' => '(?!new)[a-zA-Z0-9\-]+'])]
+    public function showTrick(string $slug, TrickRepository $trickRepository): Response
+    {
+        $trick = $trickRepository->findOneBy(['slug' => $slug]); // Trouver le trick par son slug
+
+        if (!$trick) {
+            throw $this->createNotFoundException('Aucun trick trouvé !');
+        }
+
+        $videosWithEmbedCode = [];
+        foreach ($trick->getVideos() as $video) {
+            $videosWithEmbedCode[] = $this->getEmbedCode($video->getEmbedCode());
+        }
+        
+        return $this->render('trick/show.html.twig', [
+            'trick' => $trick,
+            'videosWithEmbedCode'=> $videosWithEmbedCode,
+        ]);
+    }
+
+    private function getEmbedCode(string $url): string
+    {
+        preg_match('/(?:https?:\/\/)?(?:www\.)?(?:youtu\.be\/|(?:www\.)?youtube\.com\/(?:embed\/|v\/|watch\?v=|watch\?.+&v=))([^&\n]{11})/', $url, $matches);
+        
+        if (isset($matches[1])) {
+            $videoId = $matches[1];
+            // Retourner le code d'intégration
+            return '<iframe width="560" height="315" src="https://www.youtube.com/embed/' . $videoId . '" frameborder="0" allowfullscreen></iframe>';
+        }
+        
+        return ''; // Retourner une chaîne vide si l'URL n'est pas valide
+    }
+
+
+
 
     #[Route('/trick/new', name: 'trick_new')]
     #[IsGranted('ROLE_USER')]
@@ -70,6 +109,8 @@ class TrickController extends AbstractController
                 $this->addFlash('danger', 'Vous devez ajouter une image.');
                 return $this->redirectToRoute('trick_new');
             }
+
+            $trick->generateSlug($slugger);
 
             // Assigner l'utilisateur connecté au trick
             $trick->setUser($this->getUser());
@@ -141,6 +182,7 @@ class TrickController extends AbstractController
                 ]);
             }
 
+
             // Récupérer les URLs des vidéos soumises depuis le formulaire
             $submittedVideoUrls = $form->get('videos')->getData(); // URLs soumises
 
@@ -187,6 +229,8 @@ class TrickController extends AbstractController
 
                 $entityManager->persist($image);
             }
+
+            $trick->generateSlug($slugger); 
 
             // Mettre à jour la date de modification
             $trick->setDateUpdated(new \DateTime());

@@ -7,8 +7,8 @@ parameters:
 services:
     # default configuration for services in *this* file
     _defaults:
-        autowire: true      # Automatically injects dependencies in your services.
-        autoconfigure: true # Automatically registers your services as commands, event subscribers, etc.
+        autowire: true
+        autoconfigure: true
 
     # makes classes in src/ available to be used as services
     App\:
@@ -17,3 +17,8 @@ services:
             - '../src/DependencyInjection/'
             - '../src/Entity/'
             - '../src/Kernel.php'
+
+    # Inclure spécifiquement l'entité Trick
+    App\Entity\Trick:
+        autowire: true
+

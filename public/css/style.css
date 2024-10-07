@@ -82,3 +82,11 @@
 /* ------------------------------- */
 /* ----- END NEW TRICK PAGE ----- */
 /* ----------------------------- */
+
+
+.equal-height {
+    height: 200px; /* Hauteur fixe pour les images */
+    width: 100%; /* Prendre toute la largeur de la colonne */
+    object-fit: contain; /* Conserver le rapport d'aspect sans déformation */
+    max-width: 100%; /* Éviter le dépassement */
+}
