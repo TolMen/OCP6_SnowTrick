@@ -50,7 +50,85 @@
             {% endfor %}
         </div>
 
-        {# Bouton pour revenir à la page d'accueil #}
-        <a href="{{ path('app_home') }}" class="btn btn-primary"><i class="fa-solid fa-house"></i> Retour</a>
-    </div>
+        {# Bouton pour revenir à la page d'accueil juste avant les vidéos #}
+        <a href="{{ path('app_home') }}" class="btn btn-primary mt-4"><i class="fa-solid fa-house"></i> Retour</a>
+
+        {# Ligne de séparation après les médias pour un bon espacement avec la section des commentaires #}
+        <hr class="my-4">
+
+        {# Section des commentaires #}
+        <div class="mt-3">
+            <h4 class="text-center mb-4"><strong>Espace de discussion</strong></h4>
+
+            <div>
+                {# Formulaire pour ajouter un commentaire si l'utilisateur est connecté #}
+                {% if app.user %}
+                    {{ form_start(form) }}
+                        <div class="form-group">
+                            {{ form_label(form.message) }}
+                            {{ form_widget(form.message) }}
+                        </div>
+                        <button type="submit" class="btn btn-primary mt-3 mb-5">Poster</button>
+                    {{ form_end(form) }}
+                {% else %}
+                    <p>Veuillez vous <a href="{{ path('app_login') }}">connecter</a> pour commenter.</p>
+                {% endif %}
+            </div>
+
+            {# Liste des 10 premiers commentaires avec bordures pour les distinguer #}
+            <div class="comments-section">
+                {% for commentaire in commentaires[:10] %}
+                    <div class="comment mb-3 border p-3 rounded">
+                        <div class="d-flex">
+                            <img src="{{ asset('uploads/images/imgProfilDefault.jpg') }}" alt="default-user" class="rounded-circle me-3" style="height: 50px; width: 50px;">
+                            
+                            <div>
+                                <p class="mb-0">{{ commentaire.message }}</p> {# Message du commentaire #}
+                                <div class="d-flex justify-content-between">
+                                    <p class="mb-0"><strong>{{ commentaire.idUser.username }}</strong></p> {# Pseudo de l'utilisateur #}
+                                    <p class="small text-muted">{{ commentaire.dateCreated|date('d/m/Y') }}</p> {# Date de création sans l'heure #}
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                {% else %}
+                    <p>Aucun commentaire pour le moment ...</p>
+                {% endfor %}
+            </div>
+
+            {# Section cachée pour les commentaires supplémentaires #}
+            <div class="comments-section d-none" id="extra-comments">
+                {% for commentaire in commentaires[10:] %}
+                    <div class="comment mb-3 border p-3 rounded">
+                        <div class="d-flex">
+                            <img src="{{ asset('uploads/images/imgProfilDefault.jpg') }}" alt="default-user" class="rounded-circle me-3" style="height: 50px; width: 50px;">
+                            
+                            <div>
+                                <p class="mb-0">{{ commentaire.message }}</p> {# Message du commentaire #}
+                                <div class="d-flex justify-content-between">
+                                    <p class="mb-0"><strong>{{ commentaire.idUser.username }}</strong></p> {# Pseudo de l'utilisateur #}
+                                    <p class="small text-muted">{{ commentaire.dateCreated|date('d/m/Y') }}</p> {# Date de création sans l'heure #}
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                {% endfor %}
+            </div>
+
+            {# Bouton "Voir plus" si plus de 10 commentaires #}
+            {% if commentaires|length > 10 %}
+                <div class="text-center mt-4">
+                    <button id="show-more-comments-btn" class="btn btn-primary">Voir plus de commentaires</button>
+                </div>
+            {% endif %}
+        </div> {# Fermer la div de la section des commentaires #}
+    </div> {# Fermer la div du conteneur #}
+
+    {# Script JavaScript pour afficher les commentaires supplémentaires #}
+    <script>
+        document.getElementById('show-more-comments-btn').addEventListener('click', function() {
+            document.getElementById('extra-comments').classList.remove('d-none');
+            this.style.display = 'none';
+        });
+    </script>
 {% endblock %}
