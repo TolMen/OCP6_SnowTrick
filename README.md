@@ -1,4 +1,4 @@
-# Description
+# Symfony Project
 
 SnowTricks is a community website for snowboarders.
 - The list of figures and the description are visible to all visitors
@@ -41,3 +41,13 @@ SnowTricks is a community website for snowboarders.
 </ul>
 
 <p><strong>4 - Configure MAILER_DSN of Symfony mailer in .env.local file</strong></p>
+
+## Author
+
+[TolMen](https://github.com/TolMen) - [LinkedIn](https://www.linkedin.com/in/jessyfrachisse/)
+
+## License
+
+This project is licensed under MIT - View file [license](LICENSE) for more details.
+
+Feel free to contact me with any questions or contributions. Have a nice visit on our blog !
