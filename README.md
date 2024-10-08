@@ -20,25 +20,11 @@ SnowTricks is a community website for snowboarders.
 <ul>
     <li>Update DATABASE_URL .env file with your database configuration
         <pre>
-            <code>DATABASE_URL=mysql://db_user:db_password@127.0.0.1:3306/db_name</code>
-        </pre>
-    </li>
-    <li>Create database : 
-        <pre>
-            <code>symfony console doctrine:database:create</code>
-        </pre>
-    </li>
-    <li>Create database structure :
-        <pre>
-            <code>symfony console make:migration</code>
-        </pre>
-    </li>
-    <li>Insert fictive data (optional)
-        <pre>
-            <code>symfony console doctrine:fixtures:load</code>
-        </pre>
-    </li>
-</ul>
+            <code>DATABASE_URL=mysql://db_user:db_password@127.0.0.1:3306/db_name
+                - Create database : symfony console doctrine:database:create
+                - Create database structure : symfony console make:migration
+                - Insert fictive data (optional) : symfony console doctrine:fixtures:load
+
 
 <p><strong>4 - Configure MAILER_DSN of Symfony mailer in .env.local file</strong></p>
 
