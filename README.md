@@ -1,6 +1,6 @@
 # Symfony Project
 
-SnowTricks is a community website for snowboarders.
+SnowTricks is a community website for snowboarders :
 - The list of figures and the description are visible to all visitors
 - Registered users are allowed to comment on tips, add/edit tricks
 
@@ -17,14 +17,15 @@ SnowTricks is a community website for snowboarders.
 </pre>
 
 <p><strong>3 - Create database</strong></p>
-<ul>
-    <li>Update DATABASE_URL .env file with your database configuration
-        <pre>
-            <code>DATABASE_URL=mysql://db_user:db_password@127.0.0.1:3306/db_name
-                - Create database : symfony console doctrine:database:create
-                - Create database structure : symfony console make:migration
-                - Insert fictive data (optional) : symfony console doctrine:fixtures:load
 
+- Update DATABASE_URL .env file with your database configuration :  <br>
+DATABASE_URL=mysql://db_user:db_password@127.0.0.1:3306/db_name <br> <br>
+
+- Create database : <br> symfony console doctrine:database:create <br> <br>
+
+- Create database structure : <br> symfony console make:migration <br> <br>
+
+- Insert fictive data (optional) : <br> symfony console doctrine:fixtures:load <br> <br>
 
 <p><strong>4 - Configure MAILER_DSN of Symfony mailer in .env.local file</strong></p>
 
