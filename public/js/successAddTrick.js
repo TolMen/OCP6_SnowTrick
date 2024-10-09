@@ -1,9 +1,11 @@
 document.addEventListener("DOMContentLoaded", function () {
-    // Vérifie si le message de succès est présent dans les données de session
-    if (document.getElementById("successModal")) {
-        var successModal = new bootstrap.Modal(
-            document.getElementById("successModal")
-        );
+    // Vérifie si l'élément du modal de succès existe dans le document
+    var successModalElement = document.getElementById("successModal");
+    if (successModalElement) {
+        // Crée une instance de modal Bootstrap en utilisant l'élément existant
+        var successModal = new bootstrap.Modal(successModalElement);
+
+        // Affiche le modal de succès
         successModal.show();
     }
 });
