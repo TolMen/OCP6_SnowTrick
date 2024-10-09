@@ -34,25 +34,36 @@
 
     <div class="mb-3">
         <p class="mb-1">Images</p>
-        {{ form_widget(form.image, {'attr': {'class': 'form-control'}}) }}
-        {{ form_errors(form.image) }}
+
+        <div class="input-group mb-3">
+            {{ form_widget(form.image1, {'attr': {'class': 'form-control'}}) }}
+        </div>
+
+        <div class="input-group mb-3">
+            {{ form_widget(form.image2, {'attr': {'class': 'form-control'}}) }}
+        </div>
     </div>
+
 
     <div class="mb-4">
         <p class="mb-1">Vidéos</p>
-        <div class="video-inputs">
-            {% for video in form.videos %}
-                <div class="input-group mb-3">
-                    {{ form_widget(video) }}
-                    <button type="button" class="btn btn-danger remove-video">Supprimer</button>
-                </div>
-            {% endfor %}
+
+        <div class="input-group mb-3">
+            {{ form_widget(form.video1, {'attr': {'class': 'form-control'}}) }}
+            <button type="button" class="btn btn-danger remove-video" data-video="1">Supprimer</button>
         </div>
-        <button type="button" class="btn btn-primary add-video" title="Ajouter une vidéo"><i class="fa-solid fa-plus"></i> Vidéos</button>
+
+        <div class="input-group mb-3">
+            {{ form_widget(form.video2, {'attr': {'class': 'form-control'}}) }}
+            <button type="button" class="btn btn-danger remove-video" data-video="2">Supprimer</button>
+        </div>
     </div>
+
 
     <button type="submit" class="btn btn-success">Mettre à jour le trick</button>
 
     {{ form_end(form) }}
 </div>
+
+
 {% endblock %}

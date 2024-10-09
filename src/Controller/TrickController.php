@@ -207,6 +207,35 @@ class TrickController extends AbstractController
 
 
 
+    #[Route('/image/delete/{id}', name: 'delete_image', methods: ['POST'])]
+    public function deleteImage(Images $image, Request $request, EntityManagerInterface $entityManager): Response
+    {
+        // Vérifier la validité du token CSRF
+        if ($this->isCsrfTokenValid('delete' . $image->getId(), $request->request->get('_token'))) {
+            // Supprimer l'image physiquement du serveur
+            $imagePath = $this->getParameter('images_directory') . '/' . basename($image->getImgURL());
+            if (file_exists($imagePath)) {
+                unlink($imagePath);
+            }
+
+            // Supprimer l'entité image de la base de données
+            $entityManager->remove($image);
+            $entityManager->flush();
+
+            // Message flash pour informer l'utilisateur de la suppression
+            $this->addFlash('success', 'L\'image a été supprimée avec succès.');
+        } else {
+            $this->addFlash('danger', 'Jeton CSRF invalide. Impossible de supprimer l\'image.');
+        }
+
+        // Redirection vers la page du trick
+        return $this->redirectToRoute('trick_show', ['slug' => $image->getIdTrick()->getSlug()]);
+    }
+
+
+
+
+
 
 
     
@@ -218,63 +247,77 @@ class TrickController extends AbstractController
         $form->handleRequest($request);
 
         if ($form->isSubmitted() && $form->isValid()) {
-            // Vérifier le nom du trick
-            $existingTrick = $entityManager->getRepository(Trick::class)->findOneBy(['name' => $trick->getName()]);
-            if ($existingTrick && $existingTrick->getId() !== $trick->getId()) {
-                $form->addError(new FormError('Ce nom de trick existe déjà.'));
-                return $this->render('trick/edit.html.twig', [
-                    'form' => $form->createView(),
-                    'trick' => $trick,
-                ]);
+            // Récupérer les deux URL de vidéos
+            $video1Url = $form->get('video1')->getData();
+            $video2Url = $form->get('video2')->getData();
+
+            // Vérifier si les vidéos ont été supprimées via les champs cachés
+            if ($request->request->get('remove_video_1') === '1') {
+                $video1Url = null; // La vidéo 1 doit être supprimée
             }
 
-
-            // Récupérer les URLs des vidéos soumises depuis le formulaire
-            $submittedVideoUrls = $form->get('videos')->getData(); // URLs soumises
-
-            // Liste des vidéos existantes (dans la base de données)
-            $existingVideos = $trick->getVideos()->toArray(); // Convertir la collection en tableau
-
-            // **Étape 1 : Traiter les vidéos existantes**
-            foreach ($existingVideos as $existingVideo) {
-                $existingUrl = $existingVideo->getEmbedCode();
-                if (in_array($existingUrl, $submittedVideoUrls)) {
-                    // Si l'URL existe toujours dans le formulaire, on ne la supprime pas
-                    $submittedVideoUrls = array_diff($submittedVideoUrls, [$existingUrl]); // Supprimer l'URL de la liste des vidéos soumises
-                } else {
-                    // Si l'URL n'existe plus dans le formulaire, on la supprime
-                    $entityManager->remove($existingVideo);
-                }
+            if ($request->request->get('remove_video_2') === '1') {
+                $video2Url = null; // La vidéo 2 doit être supprimée
             }
 
-            // **Étape 2 : Ajouter les nouvelles vidéos**
-            foreach ($submittedVideoUrls as $newVideoUrl) {
-                // Si l'URL soumise n'est pas déjà dans la base de données, on l'ajoute
-                $video = new Videos();
-                $video->setEmbedCode(trim($newVideoUrl));
-                $video->setDateAdd(new \DateTime());
-                $video->setIdTrick($trick); // Associer la vidéo au Trick
-                $entityManager->persist($video); // Persister la nouvelle vidéo
+            // Supprimer les vidéos existantes
+            foreach ($trick->getVideos() as $video) {
+                $entityManager->remove($video);
             }
 
-            // **Étape 3 : Gérer l'image (si une nouvelle image est uploadée)**
-            $imageFile = $form->get('image')->getData(); // Récupérer le fichier d'image
-            if ($imageFile instanceof UploadedFile) {
-                $originalFilename = pathinfo($imageFile->getClientOriginalName(), PATHINFO_FILENAME);
+            // Ajouter ou mettre à jour les vidéos
+            if (!empty($video1Url)) {
+                $video1 = new Videos();
+                $video1->setEmbedCode($video1Url);
+                $video1->setDateAdd(new \DateTime());
+                $video1->setIdTrick($trick);
+                $entityManager->persist($video1);
+            }
+
+            if (!empty($video2Url)) {
+                $video2 = new Videos();
+                $video2->setEmbedCode($video2Url);
+                $video2->setDateAdd(new \DateTime());
+                $video2->setIdTrick($trick);
+                $entityManager->persist($video2);
+            }
+
+            // Gestion de l'image 1
+            $imageFile1 = $form->get('image1')->getData();
+            if ($imageFile1 instanceof UploadedFile) {
+                $originalFilename = pathinfo($imageFile1->getClientOriginalName(), PATHINFO_FILENAME);
                 $safeFilename = $slugger->slug($originalFilename);
-                $newFilename = $safeFilename . '-' . uniqid() . '.' . $imageFile->guessExtension();
+                $newFilename = $safeFilename . '-' . uniqid() . '.' . $imageFile1->guessExtension();
 
                 // Déplacer le fichier dans le bon dossier
-                $imageFile->move($this->getParameter('images_directory'), $newFilename);
+                $imageFile1->move($this->getParameter('images_directory'), $newFilename);
 
-                // Créer ou mettre à jour l'image
-                $image = new Images();
-                $image->setImgURL('uploads/images/imgFigure/' . $newFilename);
-                $image->setDateCreated(new \DateTime());
-                $image->setIdTrick($trick);
+                // Créer ou mettre à jour l'image 1
+                $image1 = new Images();
+                $image1->setImgURL('uploads/images/imgFigure/' . $newFilename);
+                $image1->setDateCreated(new \DateTime());
+                $image1->setIdTrick($trick);
 
-                $entityManager->persist($image);
+                $entityManager->persist($image1);
             }
+
+            // Gestion de l'image 2 (même logique)
+            $imageFile2 = $form->get('image2')->getData();
+            if ($imageFile2 instanceof UploadedFile) {
+                $originalFilename = pathinfo($imageFile2->getClientOriginalName(), PATHINFO_FILENAME);
+                $safeFilename = $slugger->slug($originalFilename);
+                $newFilename = $safeFilename . '-' . uniqid() . '.' . $imageFile2->guessExtension();
+
+                $imageFile2->move($this->getParameter('images_directory'), $newFilename);
+
+                $image2 = new Images();
+                $image2->setImgURL('uploads/images/imgFigure/' . $newFilename);
+                $image2->setDateCreated(new \DateTime());
+                $image2->setIdTrick($trick);
+
+                $entityManager->persist($image2);
+            }
+
 
             $trick->generateSlug($slugger); 
 

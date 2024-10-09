@@ -19,7 +19,7 @@ class TrickType extends AbstractType
     {
         $builder
             ->add('image', FileType::class, [
-                'label' => 'Image (jpg, png, gif) / (Obligatoire)',
+                'label' => 'Image (jpg ou png) / (Obligatoire)',
                 'mapped' => false, // Ce champ n'est pas mappé à l'entité Trick
                 'required' => true, // Une image est obligatoire
                 'constraints' => [

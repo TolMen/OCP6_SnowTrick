@@ -24,18 +24,27 @@
         {# Ligne de séparation après la description #}
         <hr class="my-4">
 
-        <p class="mt-2"><strong>Médias</strong></p>
+        <p class="mt-2 mb-5"><strong>Médias</strong></p>
 
         {# Affichage de toutes les images avec une taille uniforme et un écart réduit avec les vidéos #}
         <div class="row mb-2">
             {% for image in trick.images %}
-                <div class="col-md-3 d-flex">
-                    <img src="{{ asset(image.imgURL) }}" class="img-fluid" style="max-height: 75%;" alt="{{ trick.name }}">
+                <div class="col-md-4 mb-3"> {# Utilisation de col-md-4 pour avoir 3 images par ligne #}
+                    <div class="text-center"> {# Centrer le contenu #}
+                        <form method="post" action="{{ path('delete_image', {'id': image.id}) }}" onsubmit="return confirm('Êtes-vous sûr de vouloir supprimer cette image ?');" style="position: relative;">
+                            <input type="hidden" name="_token" value="{{ csrf_token('delete' ~ image.id) }}">
+                            <button type="submit" class="btn btn-danger btn-sm" style="position: absolute; bottom: 10px; left: 50%; transform: translateX(-50%);">
+                                <i class="fa fa-trash"></i>
+                            </button>
+                        </form>
+                        <img src="{{ asset(image.imgURL) }}" class="img-fluid" alt="{{ trick.name }}" style="height: 200px; object-fit: cover;"> {# Image bien proportionnée avec object-fit: cover #}
+                    </div>
                 </div>
             {% else %}
                 <p>Aucune image disponible</p>
             {% endfor %}
         </div>
+
 
         {# Affichage de toutes les vidéos avec une taille réduite et moins d'écart avec les images #}
         <div class="row mt-2">
