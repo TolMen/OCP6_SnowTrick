@@ -47,9 +47,15 @@ class TrickEditType extends AbstractType
                 'constraints' => [new NotBlank(['message' => 'Ce champ est obligatoire.'])],
                 'attr' => ['placeholder' => 'Entrez la catégorie']
             ])
-            ->add('image', FileType::class, [
-                'label' => 'Image',
-                'mapped' => false,
+            ->add('image1', FileType::class, [
+                'label' => 'Image 1',
+                'mapped' => false, // Ne pas mapper à l'entité Trick
+                'required' => false,
+                'attr' => ['class' => 'form-control']
+            ])
+            ->add('image2', FileType::class, [
+                'label' => 'Image 2',
+                'mapped' => false, // Ne pas mapper à l'entité Trick
                 'required' => false,
                 'attr' => ['class' => 'form-control']
             ]);

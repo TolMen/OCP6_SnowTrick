@@ -253,24 +253,42 @@ class TrickController extends AbstractController
                 $entityManager->persist($video2);
             }
 
-            // **Étape 3 : Gérer l'image (si une nouvelle image est uploadée)**
-            $imageFile = $form->get('image')->getData(); // Récupérer le fichier d'image
-            if ($imageFile instanceof UploadedFile) {
-                $originalFilename = pathinfo($imageFile->getClientOriginalName(), PATHINFO_FILENAME);
+            // Gestion de l'image 1
+            $imageFile1 = $form->get('image1')->getData();
+            if ($imageFile1 instanceof UploadedFile) {
+                $originalFilename = pathinfo($imageFile1->getClientOriginalName(), PATHINFO_FILENAME);
                 $safeFilename = $slugger->slug($originalFilename);
-                $newFilename = $safeFilename . '-' . uniqid() . '.' . $imageFile->guessExtension();
+                $newFilename = $safeFilename . '-' . uniqid() . '.' . $imageFile1->guessExtension();
 
                 // Déplacer le fichier dans le bon dossier
-                $imageFile->move($this->getParameter('images_directory'), $newFilename);
+                $imageFile1->move($this->getParameter('images_directory'), $newFilename);
 
-                // Créer ou mettre à jour l'image
-                $image = new Images();
-                $image->setImgURL('uploads/images/imgFigure/' . $newFilename);
-                $image->setDateCreated(new \DateTime());
-                $image->setIdTrick($trick);
+                // Créer ou mettre à jour l'image 1
+                $image1 = new Images();
+                $image1->setImgURL('uploads/images/imgFigure/' . $newFilename);
+                $image1->setDateCreated(new \DateTime());
+                $image1->setIdTrick($trick);
 
-                $entityManager->persist($image);
+                $entityManager->persist($image1);
             }
+
+            // Gestion de l'image 2 (même logique)
+            $imageFile2 = $form->get('image2')->getData();
+            if ($imageFile2 instanceof UploadedFile) {
+                $originalFilename = pathinfo($imageFile2->getClientOriginalName(), PATHINFO_FILENAME);
+                $safeFilename = $slugger->slug($originalFilename);
+                $newFilename = $safeFilename . '-' . uniqid() . '.' . $imageFile2->guessExtension();
+
+                $imageFile2->move($this->getParameter('images_directory'), $newFilename);
+
+                $image2 = new Images();
+                $image2->setImgURL('uploads/images/imgFigure/' . $newFilename);
+                $image2->setDateCreated(new \DateTime());
+                $image2->setIdTrick($trick);
+
+                $entityManager->persist($image2);
+            }
+
 
             $trick->generateSlug($slugger); 
 

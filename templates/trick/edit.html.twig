@@ -32,13 +32,18 @@
         {{ form_errors(form.content) }}
     </div>
 
-    <div class="mb-4">
+    <div class="mb-3">
         <p class="mb-1">Images</p>
-        <div class="mb-3">
-            {{ form_widget(form.image) }}
-            {{ form_errors(form.image) }}
+
+        <div class="input-group mb-3">
+            {{ form_widget(form.image1, {'attr': {'class': 'form-control'}}) }}
+        </div>
+
+        <div class="input-group mb-3">
+            {{ form_widget(form.image2, {'attr': {'class': 'form-control'}}) }}
         </div>
     </div>
+
 
     <div class="mb-4">
         <p class="mb-1">Vidéos</p>
