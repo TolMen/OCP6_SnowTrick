@@ -8,14 +8,17 @@
         <h1 class="h3 mb-3 font-weight-normal">E-mail de réinitialisation envoyé</h1>
         
         <p>
+            {# Message indiquant que l'e-mail de réinitialisation a été envoyé si un compte existe #}
             Si un compte correspondant à votre e-mail existe, un e-mail vient d'être envoyé contenant un lien que vous pouvez utiliser pour réinitialiser votre mot de passe.
             Ce lien expirera dans 1 heure.
         </p>
         
         <p>
+            {# Conseils pour l'utilisateur en cas de non réception de l'e-mail #}
             Si vous ne recevez pas d'e-mail, veuillez vérifier votre dossier spam ou <a href="{{ path('app_forgot_password_request') }}">réessayer</a>.
         </p>
         
+        {# Lien pour retourner à la page de connexion #}
         <a href="{{ path('app_login') }}" class="btn btn-primary mt-3">Retour à la connexion</a>
     </div>
 </div>

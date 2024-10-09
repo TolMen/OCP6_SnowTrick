@@ -5,6 +5,8 @@
 {% block body %}
 <div class="container d-flex justify-content-center align-items-center" style="height: 89vh;">
     <div class="col-md-4">
+
+        {# Messages d'erreur reset password #}
         {% for flash_error in app.flashes('reset_password_error') %}
             <div class="alert alert-danger" role="alert">{{ flash_error }}</div>
         {% endfor %}
@@ -12,7 +14,8 @@
         <h1 class="h3 mb-3 font-weight-normal text-center">Réinitialiser votre mot de passe</h1>
 
         {{ form_start(requestForm) }}
-            <div class="mb-3" >
+            <div class="mb-3">
+                {# Email pour lien de réinitialisation #}
                 {{ form_row(requestForm.email, {
                     'label': 'Email',
                     'attr': {'class': 'form-control'}

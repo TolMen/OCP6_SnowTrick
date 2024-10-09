@@ -6,11 +6,13 @@
 <div class="container mt-5 d-flex justify-content-center align-items-center flex-column" style="height: auto;">
     <h2 class="mb-4 text-center">Éditer le trick : {{ trick.name }}</h2>
 
+    {# Début du formulaire avec les attributs nécessaires pour la validation et le téléchargement de fichiers #}
     {{ form_start(form, {'attr': {'class': 'needs-validation', 'novalidate': 'novalidate', 'enctype': 'multipart/form-data'}}) }}
 
     <div class="row mb-4">
         <div class="col-md-6">
             <div class="mb-3">
+                {# Name #}
                 <p class="mb-1">Nom</p>
                 {{ form_widget(form.name, {'attr': {'class': 'form-control', 'placeholder': 'Entrez le nom du trick'}}) }}
                 {{ form_errors(form.name) }}
@@ -19,6 +21,7 @@
 
         <div class="col-md-6">
             <div class="mb-3">
+                {# Catégorie #}
                 <p class="mb-1">Catégorie</p>
                 {{ form_widget(form.category, {'attr': {'class': 'form-control', 'placeholder': 'Entrez la catégorie'}}) }}
                 {{ form_errors(form.category) }}
@@ -27,14 +30,15 @@
     </div>
 
     <div class="mb-3">
+        {# Description #}
         <p class="mb-1">Description</p>
         {{ form_widget(form.content, {'attr': {'class': 'form-control', 'placeholder': 'Décrivez le trick ici...', 'rows': 5}}) }}
         {{ form_errors(form.content) }}
     </div>
 
     <div class="mb-3">
+        {# Téléchargements Images #}
         <p class="mb-1">Images</p>
-
         <div class="input-group mb-3">
             {{ form_widget(form.image1, {'attr': {'class': 'form-control'}}) }}
         </div>
@@ -44,10 +48,9 @@
         </div>
     </div>
 
-
     <div class="mb-4">
+        {# Liens vidéos #}
         <p class="mb-1">Vidéos</p>
-
         <div class="input-group mb-3">
             {{ form_widget(form.video1, {'attr': {'class': 'form-control'}}) }}
             <button type="button" class="btn btn-danger remove-video" data-video="1">Supprimer</button>
@@ -59,11 +62,9 @@
         </div>
     </div>
 
-
+    {# Bouton Mise à jour #}
     <button type="submit" class="btn btn-success">Mettre à jour le trick</button>
 
     {{ form_end(form) }}
 </div>
-
-
 {% endblock %}

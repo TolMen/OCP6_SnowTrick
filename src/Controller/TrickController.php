@@ -22,6 +22,13 @@ use Symfony\Component\String\Slugger\SluggerInterface;
 
 class TrickController extends AbstractController
 {
+
+
+    /* 
+    Affiche la page principale des tricks. 
+    C'est la page d'accueil pour cette section du site.
+    Elle ne contient actuellement qu'un affichage de base.
+    */
     #[Route('/trick', name: 'app_trick')]
     public function index(): Response
     {
@@ -30,6 +37,12 @@ class TrickController extends AbstractController
         ]);
     }
 
+
+    /* 
+    Affiche un trick spécifique basé sur son slug. 
+    Cette méthode récupère les détails du trick, les vidéos associées, et les commentaires liés à ce trick. 
+    Elle permet également aux utilisateurs de laisser un nouveau commentaire, qui est ensuite sauvegardé en base de données. 
+    */
     #[Route('/trick/{slug}', name: 'trick_show', requirements: ['slug' => '(?!new)[a-zA-Z0-9\-]+'])]
     public function showTrick(
         string $slug,
@@ -51,7 +64,7 @@ class TrickController extends AbstractController
 
         // Récupérer tous les commentaires
         $commentaires = $entityManager->getRepository(Commentaire::class)
-            ->findBy(['id_trick' => $trick], ['dateCreated' => 'DESC']); // Obtenir tous les commentaires
+            ->findBy(['id_trick' => $trick], ['dateCreated' => 'DESC']);
 
         // Création d'un nouveau commentaire
         $commentaire = new Commentaire();
@@ -80,13 +93,16 @@ class TrickController extends AbstractController
         return $this->render('trick/show.html.twig', [
             'trick' => $trick,
             'videosWithEmbedCode' => $videosWithEmbedCode,
-            'commentaires' => $commentaires, // Passer tous les commentaires sans pagination
+            'commentaires' => $commentaires,
             'form' => $form->createView(),
         ]);
     }
 
 
-
+    /* 
+    Transforme une URL YouTube en code d'intégration HTML <iframe>. 
+    Cette méthode est utilisée pour afficher les vidéos dans la vue d'un trick. 
+    */
     private function getEmbedCode(string $url): string
     {
         preg_match('/(?:https?:\/\/)?(?:www\.)?(?:youtu\.be\/|(?:www\.)?youtube\.com\/(?:embed\/|v\/|watch\?v=|watch\?.+&v=))([^&\n]{11})/', $url, $matches);
@@ -101,8 +117,11 @@ class TrickController extends AbstractController
     }
 
 
-
-
+    /*
+    Permet la création d'un nouveau trick. 
+    Cette fonction traite un formulaire pour créer un trick, uploader une image associée, et sauvegarder le tout en base de données. 
+    Elle gère également la génération d'un slug pour le trick.
+    */
     #[Route('/trick/new', name: 'trick_new')]
     #[IsGranted('ROLE_USER')]
     public function newTrick(Request $request, EntityManagerInterface $entityManager, SluggerInterface $slugger): Response
@@ -122,7 +141,7 @@ class TrickController extends AbstractController
                 ]);
             }
 
-            // Gérer le fichier image
+            
             $imageFile = $form->get('image')->getData(); // Récupérer le fichier d'image
 
             if ($imageFile instanceof UploadedFile) {
@@ -179,7 +198,10 @@ class TrickController extends AbstractController
     }
 
 
-
+    /*
+    Supprime un trick de la base de données ainsi que tous les commentaires qui lui sont associés. 
+    La suppression est sécurisée par un jeton CSRF pour prévenir les attaques.
+    */
     #[Route('/trick/delete/{id}', name: 'trick_delete', methods: ['POST'])]
     #[IsGranted('ROLE_USER')]
     public function deleteTrick(Trick $trick, EntityManagerInterface $entityManager, Request $request): Response
@@ -205,8 +227,10 @@ class TrickController extends AbstractController
     }
 
 
-
-
+    /*
+    Supprime une image associée à un trick, à la fois dans le système de fichiers du serveur et dans la base de données. 
+    Là aussi, la suppression est protégée par un jeton CSRF.
+    */
     #[Route('/image/delete/{id}', name: 'delete_image', methods: ['POST'])]
     public function deleteImage(Images $image, Request $request, EntityManagerInterface $entityManager): Response
     {
@@ -233,12 +257,11 @@ class TrickController extends AbstractController
     }
 
 
-
-
-
-
-
-    
+    /*
+    Permet la modification d'un trick existant. 
+    L'utilisateur peut changer les vidéos et les images du trick, ainsi que ses autres informations. 
+    Cette méthode met à jour les entrées correspondantes dans la base de données.
+    */
     #[Route('/trick/edit/{id}', name: 'trick_edit')]
     #[IsGranted('ROLE_USER')]
     public function editTrick(Request $request, Trick $trick, EntityManagerInterface $entityManager, SluggerInterface $slugger): Response
@@ -340,10 +363,10 @@ class TrickController extends AbstractController
     }
 
 
-
-
-
-
+    /*
+    Cette méthode met à jour les informations de base d'un trick (nom, contenu, catégorie) et sauvegarde les modifications. 
+    Elle est appelée via une requête POST.
+    */
     #[Route('/trick/update/{id}', name: 'trick_update', methods: ['POST'])]
     #[IsGranted('ROLE_USER')]
     public function updateTrick(Request $request, Trick $trick, EntityManagerInterface $entityManager): Response

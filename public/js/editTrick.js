@@ -1,9 +1,12 @@
+// Écouteur d'événements qui s'active lorsque le DOM est complètement chargé
 document.addEventListener("DOMContentLoaded", function () {
     // Fonction pour gérer le clic sur les boutons de suppression des vidéos
     document.querySelectorAll(".remove-video").forEach(function (button) {
         button.addEventListener("click", function () {
             const videoNumber = this.getAttribute("data-video"); // Récupérer le numéro de la vidéo
-            const videoInput = document.querySelector(`#trick_edit_video${videoNumber}`); // Utiliser l'ID correct
+            const videoInput = document.querySelector(
+                `#trick_edit_video${videoNumber}`
+            ); // Utiliser l'ID correct
 
             // Vider le champ et masquer l'input
             if (videoInput) {
@@ -16,8 +19,8 @@ document.addEventListener("DOMContentLoaded", function () {
             const hiddenInput = document.createElement("input");
             hiddenInput.type = "hidden";
             hiddenInput.name = `remove_video_${videoNumber}`; // Crée un nom pour la suppression côté serveur
-            hiddenInput.value = "1";
-            form.appendChild(hiddenInput);
+            hiddenInput.value = "1"; // Indique que la vidéo doit être supprimée
+            form.appendChild(hiddenInput); // Ajouter le champ caché au formulaire
         });
     });
 
@@ -25,7 +28,9 @@ document.addEventListener("DOMContentLoaded", function () {
     document.querySelectorAll(".remove-image").forEach(function (button) {
         button.addEventListener("click", function () {
             const imageNumber = this.getAttribute("data-image"); // Récupérer le numéro de l'image
-            const imageInput = document.querySelector(`#trick_edit_image${imageNumber}`); // Utiliser l'ID correct
+            const imageInput = document.querySelector(
+                `#trick_edit_image${imageNumber}`
+            ); // Utiliser l'ID correct
 
             // Vider le champ et masquer l'input
             if (imageInput) {
@@ -38,8 +43,8 @@ document.addEventListener("DOMContentLoaded", function () {
             const hiddenInput = document.createElement("input");
             hiddenInput.type = "hidden";
             hiddenInput.name = `remove_image_${imageNumber}`; // Crée un nom pour la suppression côté serveur
-            hiddenInput.value = "1";
-            form.appendChild(hiddenInput);
+            hiddenInput.value = "1"; // Indique que l'image doit être supprimée
+            form.appendChild(hiddenInput); // Ajouter le champ caché au formulaire
         });
     });
 });

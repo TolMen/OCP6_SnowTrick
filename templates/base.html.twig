@@ -1,24 +1,29 @@
 <!DOCTYPE html>
-  <html>
-    <head>
-        <title>{% block title %}{% endblock %}</title>
-        {% include 'component/meta.html.twig' %}
-        {% block stylesheets %}{% endblock %}
-    </head>
-    <body id="top">
+<html>
+<head>
+    <title>{% block title %}{% endblock %}</title>
+    
+    {# Inclusion Balises Meta #}
+    {% include 'component/meta.html.twig' %}
+    <link rel="icon" type="image/x-icon" href="{{ asset('favicon.ico') }}">
+    {% block stylesheets %}{% endblock %}
+</head>
+<body id="top">
 
-      {% include 'component/navbar.html.twig' %}
-      {% block body %}{% endblock %}
-      {% include 'component/footer.html.twig' %}
-      {% block javascripts %}
+    {# Inclusion NavBar commune #}
+    {% include 'component/navbar.html.twig' %}
+    
+    {% block body %}{% endblock %}
+    
+    {# Inclusion Footer commun #}
+    {% include 'component/footer.html.twig' %}
+    
+    {# Inclusion scripts JavaScript #}
+    {% block javascripts %}
         <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.2.3/dist/js/bootstrap.bundle.min.js"></script>
-
         <script src="{{ asset('js/loadMoreHome.js') }}"></script>
-
         <script src="{{ asset('js/successAddTrick.js') }}"></script>
-
         <script src="{{ asset('js/editTrick.js') }}"></script>
-
-      {% endblock %}
-    </body>
-  </html>
+    {% endblock %}
+</body>
+</html>

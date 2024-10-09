@@ -19,6 +19,7 @@
 <div class="container mt-5 text-center">
     <h2 class="mb-4" id="tricks">Liste des tricks</h2>
 
+    {# Affichage d'un message de succès si présent dans la session #}
     {% if app.session.flashBag.has('success') %}
         <div class="modal fade" id="successModal" tabindex="-1" aria-labelledby="successModalLabel" aria-hidden="true">
             <div class="modal-dialog">
@@ -38,13 +39,14 @@
         </div>
     {% endif %}
 
-
     <div style="margin-bottom: 50px;"></div>
 
     <div class="row">
+        {# Boucle pour afficher les 8 premiers tricks #}
         {% for trick in tricks[:8] %}
             <div class="col-md-3">
                 <div class="card mb-4">
+                    {# Affichage de l'image du trick #}
                     {% if trick.images|length > 0 %}
                         <img src="{{ asset(trick.images[0].imgURL) }}" class="card-img-top img-fluid" alt="{{ trick.name }}" style="height: 200px; object-fit: cover;">
                     {% endif %}
@@ -55,6 +57,7 @@
                                     <i class="fa-solid fa-eye"></i>
                                 </a>
                             </h5>
+                            {# Vérification des droits de l'utilisateur pour afficher les options d'édition et de suppression #}
                             {% if is_granted('ROLE_USER') %}
                                 <div>
                                     <a href="{{ path('trick_edit', {id: trick.id}) }}" class="text-primary mx-2" title="Éditer">
@@ -70,6 +73,7 @@
                 </div>
             </div>
 
+            {# Modal de confirmation de suppression pour chaque trick #}
             <div class="modal fade" id="deleteModal{{ trick.id }}" tabindex="-1" aria-labelledby="deleteModalLabel{{ trick.id }}" aria-hidden="true">
                 <div class="modal-dialog">
                     <div class="modal-content">
@@ -93,10 +97,12 @@
         {% endfor %}
     </div>
 
+    {# Affichage des tricks supplémentaires cachés par défaut #}
     <div class="row d-none" id="extra-tricks">
         {% for trick in tricks[8:] %}
             <div class="col-md-3">
                 <div class="card mb-4">
+                    {# Affichage de l'image du trick #}
                     {% if trick.images|length > 0 %}
                         <img src="{{ asset(trick.images[0].imgURL) }}" class="card-img-top img-fluid" alt="{{ trick.name }}" style="height: 200px; object-fit: cover;">
                     {% endif %}
@@ -107,6 +113,7 @@
                                     <i class="fa-solid fa-eye"></i>
                                 </a>
                             </h5>
+                            {# Vérification des droits de l'utilisateur pour afficher les options d'édition et de suppression #}
                             {% if is_granted('ROLE_USER') %}
                                 <div>
                                     <a href="{{ path('trick_edit', {id: trick.id}) }}" class="text-primary mx-2" title="Éditer">
@@ -122,6 +129,7 @@
                 </div>
             </div>
 
+            {# Modal de confirmation de suppression pour chaque trick supplémentaire #}
             <div class="modal fade" id="deleteModal{{ trick.id }}" tabindex="-1" aria-labelledby="deleteModalLabel{{ trick.id }}" aria-hidden="true">
                 <div class="modal-dialog">
                     <div class="modal-content">
@@ -145,7 +153,7 @@
         {% endfor %}
     </div>
 
-    <!-- Ajout des boutons "Voir Plus" et "Créer un Trick" ici -->
+    {# Ajout des boutons "Voir Plus" et "Créer un Trick" ici #}
     <div class="mt-4">
         {% if tricks|length > 8 %}
             <button id="show-more-btn" class="btn btn-primary"><i class="fa-solid fa-eye"></i> Tricks</button>
@@ -158,6 +166,7 @@
     </div>
 </div>
 
+{# Boutons de défilement vers le bas et le haut #}
 <a href="#tricks" class="scroll-to-top down" title="Descendre vers les tricks"><i class="fa-solid fa-arrow-down-long"></i></a>
 <a href="#top" class="scroll-to-top up" title="Retour en haut"><i class="fa-solid fa-arrow-up-long"></i></a>
 
