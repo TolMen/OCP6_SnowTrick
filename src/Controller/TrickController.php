@@ -218,43 +218,39 @@ class TrickController extends AbstractController
         $form->handleRequest($request);
 
         if ($form->isSubmitted() && $form->isValid()) {
-            // Vérifier le nom du trick
-            $existingTrick = $entityManager->getRepository(Trick::class)->findOneBy(['name' => $trick->getName()]);
-            if ($existingTrick && $existingTrick->getId() !== $trick->getId()) {
-                $form->addError(new FormError('Ce nom de trick existe déjà.'));
-                return $this->render('trick/edit.html.twig', [
-                    'form' => $form->createView(),
-                    'trick' => $trick,
-                ]);
+            // Récupérer les deux URL de vidéos
+            $video1Url = $form->get('video1')->getData();
+            $video2Url = $form->get('video2')->getData();
+
+            // Vérifier si les vidéos ont été supprimées via les champs cachés
+            if ($request->request->get('remove_video_1') === '1') {
+                $video1Url = null; // La vidéo 1 doit être supprimée
             }
 
-
-            // Récupérer les URLs des vidéos soumises depuis le formulaire
-            $submittedVideoUrls = $form->get('videos')->getData(); // URLs soumises
-
-            // Liste des vidéos existantes (dans la base de données)
-            $existingVideos = $trick->getVideos()->toArray(); // Convertir la collection en tableau
-
-            // **Étape 1 : Traiter les vidéos existantes**
-            foreach ($existingVideos as $existingVideo) {
-                $existingUrl = $existingVideo->getEmbedCode();
-                if (in_array($existingUrl, $submittedVideoUrls)) {
-                    // Si l'URL existe toujours dans le formulaire, on ne la supprime pas
-                    $submittedVideoUrls = array_diff($submittedVideoUrls, [$existingUrl]); // Supprimer l'URL de la liste des vidéos soumises
-                } else {
-                    // Si l'URL n'existe plus dans le formulaire, on la supprime
-                    $entityManager->remove($existingVideo);
-                }
+            if ($request->request->get('remove_video_2') === '1') {
+                $video2Url = null; // La vidéo 2 doit être supprimée
             }
 
-            // **Étape 2 : Ajouter les nouvelles vidéos**
-            foreach ($submittedVideoUrls as $newVideoUrl) {
-                // Si l'URL soumise n'est pas déjà dans la base de données, on l'ajoute
-                $video = new Videos();
-                $video->setEmbedCode(trim($newVideoUrl));
-                $video->setDateAdd(new \DateTime());
-                $video->setIdTrick($trick); // Associer la vidéo au Trick
-                $entityManager->persist($video); // Persister la nouvelle vidéo
+            // Supprimer les vidéos existantes
+            foreach ($trick->getVideos() as $video) {
+                $entityManager->remove($video);
+            }
+
+            // Ajouter ou mettre à jour les vidéos
+            if (!empty($video1Url)) {
+                $video1 = new Videos();
+                $video1->setEmbedCode($video1Url);
+                $video1->setDateAdd(new \DateTime());
+                $video1->setIdTrick($trick);
+                $entityManager->persist($video1);
+            }
+
+            if (!empty($video2Url)) {
+                $video2 = new Videos();
+                $video2->setEmbedCode($video2Url);
+                $video2->setDateAdd(new \DateTime());
+                $video2->setIdTrick($trick);
+                $entityManager->persist($video2);
             }
 
             // **Étape 3 : Gérer l'image (si une nouvelle image est uploadée)**

@@ -1,21 +1,25 @@
-// Ajouter une nouvelle vidéo
-document.querySelector(".add-video").addEventListener("click", function () {
-    var videoInput = document.createElement("div");
-    videoInput.classList.add("input-group", "mb-3");
+document.addEventListener("DOMContentLoaded", function () {
+    // Fonction pour gérer le clic sur les boutons de suppression
+    document.querySelectorAll(".remove-video").forEach(function (button) {
+        button.addEventListener("click", function () {
+            const videoNumber = this.getAttribute("data-video"); // Récupérer le numéro de la vidéo
+            const videoInput = document.querySelector(
+                `#trick_edit_video${videoNumber}` // Utilisation des bons IDs trick_edit_video1, trick_edit_video2
+            );
 
-    // Ajouter le champ input avec le bouton de suppression
-    videoInput.innerHTML = `
-        <input type="text" name="trick[videos][]" class="form-control" placeholder="Entrez l'URL de la vidéo ici..." required> 
-        <button type="button" class="btn btn-danger remove-video">Supprimer</button>
-    `;
+            // Vider le champ et masquer l'input
+            if (videoInput) {
+                videoInput.value = ""; // Vider la valeur de l'input
+                videoInput.closest(".input-group").style.display = "none"; // Cacher l'input
+            }
 
-    // Ajouter la nouvelle vidéo au DOM
-    document.querySelector(".video-inputs").appendChild(videoInput);
-});
-
-// Gérer la suppression des vidéos
-document.querySelector(".video-inputs").addEventListener("click", function (e) {
-    if (e.target.closest(".remove-video")) {
-        e.target.closest(".input-group").remove();
-    }
+            // Ajouter un champ caché pour indiquer la suppression côté serveur
+            const form = document.querySelector("form");
+            const hiddenInput = document.createElement("input");
+            hiddenInput.type = "hidden";
+            hiddenInput.name = `remove_video_${videoNumber}`; // Crée un nom pour la suppression côté serveur
+            hiddenInput.value = "1";
+            form.appendChild(hiddenInput);
+        });
+    });
 });
