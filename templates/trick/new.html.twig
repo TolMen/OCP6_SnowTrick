@@ -6,11 +6,14 @@
 <div class="container mt-5 d-flex justify-content-center align-items-center flex-column" style="height: 75vh;">
     <h2 class="mb-4 text-center">Création d'un nouveau trick</h2>
 
+    {# Début du formulaire avec les attributs de validation #}
     {{ form_start(form, {'attr': {'class': 'needs-validation', 'novalidate': 'novalidate'}}) }}
 
+    {# Section Médias #}
     <div class="row mb-4">
         <div class="col-md-6">
             <div class="mb-3">
+                {# Téléchargement Image #}
                 {{ form_label(form.image) }}
                 {{ form_widget(form.image, {'attr': {'class': 'form-control' }}) }}
                 {{ form_errors(form.image) }}
@@ -19,6 +22,7 @@
 
         <div class="col-md-6">
             <div class="mb-3">
+                {# Code d'intégration Vidéo #}
                 {{ form_label(form.embedCode) }}
                 {{ form_widget(form.embedCode, {'attr': {'class': 'form-control', 'placeholder': 'Entrez l\'URL de la vidéo ici...' }}) }}
                 {{ form_errors(form.embedCode) }}
@@ -29,29 +33,32 @@
     <div class="row mb-4">
         <div class="col-md-6">
             <div class="mb-3">
+                {# Name #}
                 {{ form_label(form.name) }}
                 {{ form_widget(form.name, {'attr': {'class': 'form-control', 'placeholder': 'Entrez le nom du trick'}}) }}
                 {{ form_errors(form.name) }}
-                {{ form_errors(form) }} {#  Affiche si le nom du trick existe deja #}
-
+                {{ form_errors(form) }} {# Erreur d'unicité (unique) nom des tricks #}
             </div>
         </div>
 
         <div class="col-md-6">
             <div class="mb-3">
+                {# Catégorie #}
                 {{ form_label(form.category) }}
                 {{ form_widget(form.category, {'attr': {'class': 'form-control', 'placeholder': 'Entrez la catégorie'}}) }}
-                {{ form_errors(form.category) }}
+                {{ form_errors(form.category) }} {# Affiche les erreurs de validation pour le champ category #}
             </div>
         </div>
     </div>
 
+    {# Description #}
     <div class="mb-3">
         {{ form_label(form.content) }}
         {{ form_widget(form.content, {'attr': {'class': 'form-control', 'placeholder': 'Décrivez le trick ici...', 'rows': 5}}) }}
         {{ form_errors(form.content) }}
     </div>
 
+    {# Boutons soumission ou annulation formulaire #}
     <div class="text-center mt-5">
         <button type="submit" class="btn btn-primary" title="Ajouter"><i class="fa-solid fa-pen"></i></button>
         <a href="{{ path('app_home') }}" class="btn btn-dark" title="Annuler">

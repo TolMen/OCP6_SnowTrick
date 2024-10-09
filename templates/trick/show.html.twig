@@ -1,43 +1,43 @@
-{# templates/trick/show.html.twig #}
-
 {% extends 'base.html.twig' %}
 
+{# Définit le titre de la page en utilisant le nom du trick #}
 {% block title %}{{ trick.name }}{% endblock %}
 
 {% block body %}
     <div class="container mt-5">
-        {# Section d'en-tête avec image de fond moins zoomée #}
+
+        {# Affiche l'image principale du trick en arrière-plan #}
         <div class="bg-image" style="background-image: url('{{ asset(trick.images.first.imgURL) }}'); height: 400px; background-size: contain; background-position: center; background-repeat: no-repeat;">
         </div>
 
-        {# Affichage du nom du trick et de la catégorie en dessous #}
-        <h1 class="text-center mt-3">{{ trick.name }}</h1>
-        <p class="text-center mt-1"><strong>Catégorie :</strong> {{ trick.category }}</p>
+        <h1 class="text-center mt-3">{{ trick.name }}</h1> {# Titre du trick #}
+        <p class="text-center mt-1"><strong>Catégorie :</strong> {{ trick.category }}</p> {# Affiche la catégorie du trick #}
 
-        {# Ligne de séparation avant la description #}
         <hr class="my-4">
 
-        {# Description centrée avec un titre plus petit #}
+        {# Section de description du trick #}
         <h4 class="text-center mb-4"><strong>Description</strong></h4>
         <p class="text-center">{{ trick.content|nl2br }}</p>
 
-        {# Ligne de séparation après la description #}
         <hr class="my-4">
 
+        {# Section Médias #}
         <p class="mt-2 mb-5"><strong>Médias</strong></p>
 
-        {# Affichage de toutes les images avec une taille uniforme et un écart réduit avec les vidéos #}
+        {# Affiche les images #}
         <div class="row mb-2">
             {% for image in trick.images %}
-                <div class="col-md-4 mb-3"> {# Utilisation de col-md-4 pour avoir 3 images par ligne #}
-                    <div class="text-center"> {# Centrer le contenu #}
+                <div class="col-md-4 mb-3">
+                    <div class="text-center">
+                        {# Formulaire pour supprimer une image avec confirmation #}
                         <form method="post" action="{{ path('delete_image', {'id': image.id}) }}" onsubmit="return confirm('Êtes-vous sûr de vouloir supprimer cette image ?');" style="position: relative;">
                             <input type="hidden" name="_token" value="{{ csrf_token('delete' ~ image.id) }}">
                             <button type="submit" class="btn btn-danger btn-sm" style="position: absolute; bottom: 10px; left: 50%; transform: translateX(-50%);">
                                 <i class="fa fa-trash"></i>
                             </button>
                         </form>
-                        <img src="{{ asset(image.imgURL) }}" class="img-fluid" alt="{{ trick.name }}" style="height: 200px; object-fit: cover;"> {# Image bien proportionnée avec object-fit: cover #}
+                        {# Affiche l'image du trick #}
+                        <img src="{{ asset(image.imgURL) }}" class="img-fluid" alt="{{ trick.name }}" style="height: 200px; object-fit: cover;">
                     </div>
                 </div>
             {% else %}
@@ -45,8 +45,7 @@
             {% endfor %}
         </div>
 
-
-        {# Affichage de toutes les vidéos avec une taille réduite et moins d'écart avec les images #}
+        {# Affiche les vidéos #}
         <div class="row mt-2">
             {% for videoEmbedCode in videosWithEmbedCode %}
                 <div class="col-md-6 mb-3">
@@ -59,18 +58,17 @@
             {% endfor %}
         </div>
 
-        {# Bouton pour revenir à la page d'accueil juste avant les vidéos #}
+        {# Lien pour retourner à la page d'accueil #}
         <a href="{{ path('app_home') }}" class="btn btn-primary mt-4"><i class="fa-solid fa-house"></i> Retour</a>
 
-        {# Ligne de séparation après les médias pour un bon espacement avec la section des commentaires #}
         <hr class="my-4">
 
-        {# Section des commentaires #}
+        {# Section Espace de discussions #}
         <div class="mt-3">
             <h4 class="text-center mb-4"><strong>Espace de discussion</strong></h4>
 
             <div>
-                {# Formulaire pour ajouter un commentaire si l'utilisateur est connecté #}
+                {# Vérifie si l'utilisateur est connecté pour afficher le formulaire de commentaire #}
                 {% if app.user %}
                     {{ form_start(form) }}
                         <div class="form-group">
@@ -80,11 +78,12 @@
                         <button type="submit" class="btn btn-primary mt-3 mb-5">Poster</button>
                     {{ form_end(form) }}
                 {% else %}
+                    {# Message pour inviter l'utilisateur à se connecter #}
                     <p>Veuillez vous <a href="{{ path('app_login') }}">connecter</a> pour commenter.</p>
                 {% endif %}
             </div>
 
-            {# Liste des 10 premiers commentaires avec bordures pour les distinguer #}
+            {# Affiche les commentaires avec une limite de 10 pour l'affichage initial #}
             <div class="comments-section">
                 {% for commentaire in commentaires[:10] %}
                     <div class="comment mb-3 border p-3 rounded">
@@ -92,10 +91,10 @@
                             <img src="{{ asset('uploads/images/imgProfilDefault.jpg') }}" alt="default-user" class="rounded-circle me-3" style="height: 50px; width: 50px;">
                             
                             <div>
-                                <p class="mb-0">{{ commentaire.message }}</p> {# Message du commentaire #}
+                                <p class="mb-0">{{ commentaire.message }}</p> 
                                 <div class="d-flex justify-content-between">
-                                    <p class="mb-0"><strong>{{ commentaire.idUser.username }}</strong></p> {# Pseudo de l'utilisateur #}
-                                    <p class="small text-muted">{{ commentaire.dateCreated|date('d/m/Y') }}</p> {# Date de création sans l'heure #}
+                                    <p class="mb-0"><strong>{{ commentaire.idUser.username }}</strong></p> 
+                                    <p class="small text-muted">{{ commentaire.dateCreated|date('d/m/Y') }}</p> 
                                 </div>
                             </div>
                         </div>
@@ -105,7 +104,7 @@
                 {% endfor %}
             </div>
 
-            {# Section cachée pour les commentaires supplémentaires #}
+            {# Affiche les commentaires supplémentaires de manière cachée #}
             <div class="comments-section d-none" id="extra-comments">
                 {% for commentaire in commentaires[10:] %}
                     <div class="comment mb-3 border p-3 rounded">
@@ -113,10 +112,10 @@
                             <img src="{{ asset('uploads/images/imgProfilDefault.jpg') }}" alt="default-user" class="rounded-circle me-3" style="height: 50px; width: 50px;">
                             
                             <div>
-                                <p class="mb-0">{{ commentaire.message }}</p> {# Message du commentaire #}
+                                <p class="mb-0">{{ commentaire.message }}</p> 
                                 <div class="d-flex justify-content-between">
-                                    <p class="mb-0"><strong>{{ commentaire.idUser.username }}</strong></p> {# Pseudo de l'utilisateur #}
-                                    <p class="small text-muted">{{ commentaire.dateCreated|date('d/m/Y') }}</p> {# Date de création sans l'heure #}
+                                    <p class="mb-0"><strong>{{ commentaire.idUser.username }}</strong></p> 
+                                    <p class="small text-muted">{{ commentaire.dateCreated|date('d/m/Y') }}</p> 
                                 </div>
                             </div>
                         </div>
@@ -124,16 +123,16 @@
                 {% endfor %}
             </div>
 
-            {# Bouton "Voir plus" si plus de 10 commentaires #}
+            {# Bouton pour voir plus de commentaires si > 10 #}
             {% if commentaires|length > 10 %}
                 <div class="text-center mt-4">
                     <button id="show-more-comments-btn" class="btn btn-primary">Voir plus de commentaires</button>
                 </div>
             {% endif %}
-        </div> {# Fermer la div de la section des commentaires #}
-    </div> {# Fermer la div du conteneur #}
+        </div> 
+    </div>
 
-    {# Script JavaScript pour afficher les commentaires supplémentaires #}
+    {# Script pour afficher les commentaires supplémentaires #}
     <script>
         document.getElementById('show-more-comments-btn').addEventListener('click', function() {
             document.getElementById('extra-comments').classList.remove('d-none');

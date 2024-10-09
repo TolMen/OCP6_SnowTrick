@@ -1,8 +1,12 @@
+{# Apparence de l'email #}
+
 <h2>Salutation !</h2>
 <h3>Veuillez confirmer votre email !</h3>
 
 <p>
     Veuillez confirmer votre adresse e-mail en cliquant sur le lien suivant : <br><br>
+    
+    {# Lien de confirmation avec l'URL signée #}
     <a href="{{ signedUrl|raw }}">Confirmation de mon email !</a>
 </p>
 

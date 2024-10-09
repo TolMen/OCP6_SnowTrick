@@ -1,8 +1,12 @@
+{# Apparence de l'email #}
+
 <h2>Salutation !</h2>
 
 <p>Pour réinitialiser votre mot de passe, veuillez cliquer sur le lien suivant :</p>
 
-<a href="{{ url('app_reset_password', {token: resetToken.token}) }}">{{ url('app_reset_password', {token: resetToken.token}) }}</a>
+{# Lien pour réinitialiser le mot de passe, utilisant un token de sécurité pour l'authentification #}
+<a href="{{ url('app_reset_password', {token: resetToken.token}) }}">
+    {{ url('app_reset_password', {token: resetToken.token}) }} {# Affiche l'URL complète du lien #}
+</a>
 
 <p>Ce lien expirera dans 1 heure.</p>
-

@@ -5,28 +5,35 @@
 {% block body %}
 <div class="container d-flex justify-content-center align-items-center" style="height: 89vh;">
     <div class="col-md-4">
+
+        {# Erreurs --> Vérification email #}
         {% for flash_error in app.flashes('verify_email_error') %}
             <div class="alert alert-danger" role="alert">{{ flash_error }}</div>
         {% endfor %}
 
         <h1 class="h3 mb-3 font-weight-normal text-center">Inscription</h1>
 
-        {{ form_errors(registrationForm) }}
+        {{ form_errors(registrationForm) }} {# Affiche les erreurs #}
 
         {{ form_start(registrationForm) }}
 
+        {# Pseudo #}
         <div class="mb-3">
             {{ form_row(registrationForm.username, {
                 'label': 'Pseudo',
                 'attr': {'class': 'form-control'}
             }) }}
         </div>
+
+        {# Email #}
         <div class="mb-3">
             {{ form_row(registrationForm.email, {
                 'label': 'Email',
                 'attr': {'class': 'form-control'}
             }) }}
         </div>
+
+        {# Password #}
         <div class="mb-3">
             {{ form_row(registrationForm.plainPassword, {
                 'label': 'Mot de passe',
@@ -35,6 +42,7 @@
         </div>
 
         <div class="mb-3">
+            {# Case à cocher pour accepter les conditions d'utilisation #}
             <div class="form-check">
                 {{ form_widget(registrationForm.agreeTerms, {
                     'attr': {'class': 'form-check-input'}
@@ -45,6 +53,7 @@
             </div>
         </div>
 
+        {# Bouton Register #}
         <button type="submit" class="btn btn-primary w-100">S'inscrire</button>
         {{ form_end(registrationForm) }}
     </div>

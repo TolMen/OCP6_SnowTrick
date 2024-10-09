@@ -6,10 +6,12 @@
 <div class="container d-flex justify-content-center align-items-center" style="height: 89vh;">
     <div class="col-md-4">
         <form method="post">
+            {# Message d'erreur de connexion #}
             {% if error %}
                 <div class="alert alert-danger">{{ error.messageKey|trans(error.messageData, 'security') }}</div>
             {% endif %}
 
+            {# Vérification si l'utilisateur est déjà connecté #}
             {% if app.user %}
                 <div class="mb-3">
                     Vous êtes connecté en tant que {{ app.user.userIdentifier }}, <a href="{{ path('app_logout') }}">Logout</a>
@@ -18,22 +20,27 @@
 
             <h1 class="h3 mb-3 font-weight-normal text-center">Connexion</h1>
 
+            {# Email #}
             <div class="mb-3">
                 <label for="inputEmail" class="form-label">Email</label>
                 <input type="email" value="{{ last_username }}" name="email" id="inputEmail" class="form-control" autocomplete="email" required autofocus>
             </div>
 
+            {# Password #}
             <div class="mb-3">
                 <label for="inputPassword" class="form-label">Mot de passe</label>
                 <input type="password" name="password" id="inputPassword" class="form-control" autocomplete="current-password" required>
             </div>
 
+            {# Token CSRF pour sécuriser le formulaire #}
             <input type="hidden" name="_csrf_token" value="{{ csrf_token('authenticate') }}">
 
+            {# Bouton Login #}
             <button class="btn btn-lg btn-primary w-100" type="submit">
                 Se connecter
             </button>
         </form>
+        {# Lien password oublié #}
         <p class="mt-3 text-center">
             <a href="{{ path('app_forgot_password_request') }}">Mot de passe oublié ?</a>
         </p>
