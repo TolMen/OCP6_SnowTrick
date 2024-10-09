@@ -207,6 +207,35 @@ class TrickController extends AbstractController
 
 
 
+    #[Route('/image/delete/{id}', name: 'delete_image', methods: ['POST'])]
+    public function deleteImage(Images $image, Request $request, EntityManagerInterface $entityManager): Response
+    {
+        // Vérifier la validité du token CSRF
+        if ($this->isCsrfTokenValid('delete' . $image->getId(), $request->request->get('_token'))) {
+            // Supprimer l'image physiquement du serveur
+            $imagePath = $this->getParameter('images_directory') . '/' . basename($image->getImgURL());
+            if (file_exists($imagePath)) {
+                unlink($imagePath);
+            }
+
+            // Supprimer l'entité image de la base de données
+            $entityManager->remove($image);
+            $entityManager->flush();
+
+            // Message flash pour informer l'utilisateur de la suppression
+            $this->addFlash('success', 'L\'image a été supprimée avec succès.');
+        } else {
+            $this->addFlash('danger', 'Jeton CSRF invalide. Impossible de supprimer l\'image.');
+        }
+
+        // Redirection vers la page du trick
+        return $this->redirectToRoute('trick_show', ['slug' => $image->getIdTrick()->getSlug()]);
+    }
+
+
+
+
+
 
 
     
