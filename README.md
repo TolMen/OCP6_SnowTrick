@@ -1,5 +1,7 @@
 # Symfony Project
 
+> **Ce projet a été réalisé dans le cadre de mon apprentissage pour le parcours d'OpenClassrooms (Développeur d'application PHP/Symfony).**
+
 SnowTricks is a community website for snowboarders :
 - The list of figures and the description are visible to all visitors
 - Registered users are allowed to comment on tips, add/edit tricks
