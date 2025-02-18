@@ -1,42 +1,77 @@
-# Symfony Project
+# ❄️ SnowTricks - Snowboarding Community Website 🏂
 
-> **Ce projet a été réalisé dans le cadre de mon apprentissage pour le parcours d'OpenClassrooms (Développeur d'application PHP/Symfony).**
+> **This project was created as part of my learning journey in the OpenClassrooms curriculum (PHP/Symfony Application Developer).**  
+> --> *Version : [Français](README_fr.md)* 📖
 
-SnowTricks is a community website for snowboarders :
-- The list of figures and the description are visible to all visitors
-- Registered users are allowed to comment on tips, add/edit tricks
+## 📖 Description
 
-# Installation
+**SnowTricks** is a community platform dedicated to snowboarders.  
+Users can discover and share snowboarding tricks, as well as interact through a comment system.
 
-<p><strong>1 - Git clone the project</strong></p>
-<pre>
-    <code>https://github.com/TolMen/OCProject6</code>
-</pre>
+![Project Preview - SnowTricks](screenshot.jpg)
 
-<p><strong>2 - Install libraries</strong></p>
-<pre>
-    <code>symfony console composer install</code>
-</pre>
+## 🚀 Features
 
-<p><strong>3 - Create database</strong></p>
+- **Trick Catalog** : All visitors can view the list of tricks with descriptions.
+- **Trick Management** : Registered users can add, edit, and delete tricks.
+- **Comment System** : Members can comment on tricks and share tips.
+- **User Authentication** : Secure sign-up and login.
+- **Security Enhancements** : Protection against XSS, CSRF, and SQL injection.
+- **Responsive Design** : Optimized for all screen sizes.
 
-- Update DATABASE_URL .env file with your database configuration :  <br>
-DATABASE_URL=mysql://db_user:db_password@127.0.0.1:3306/db_name <br> <br>
+## 🚧 Installation
 
-- Create database : <br> symfony console doctrine:database:create <br> <br>
+### Prerequisites
 
-- Create database structure : <br> symfony console make:migration <br> <br>
+Before starting, ensure you have the following installed:
 
-- Insert fictive data (optional) : <br> symfony console doctrine:fixtures:load <br> <br>
+- **PHP and Composer**
+- **Symfony CLI**
+- **MySQL**
+- **Git**
 
-<p><strong>4 - Configure MAILER_DSN of Symfony mailer in .env.local file</strong></p>
+### Installation Steps
 
-## Author
+1. **Clone the repository**  
+   ```sh
+   git clone https://github.com/TolMen/OCProject6.git
+   cd OCProject6
+   ```
+
+2. **Install dependencies**  
+   ```sh
+   symfony console composer install
+   ```
+
+3. **Set up the database**  
+   - Edit the `.env` file and update the following line with your database settings :  
+     ```sh
+     DATABASE_URL=mysql://db_user:db_password@127.0.0.1:3306/db_name
+     ```
+   - Create the database :  
+     ```sh
+     symfony console doctrine:database:create
+     ```
+   - Generate the database structure :  
+     ```sh
+     symfony console make:migration
+     symfony console doctrine:migrations:migrate
+     ```
+   - (Optional) Insert dummy data :  
+     ```sh
+     symfony console doctrine:fixtures:load
+     ```
+
+4. **Configure email sending**  
+   - Edit `.env.local` and set up MAILER_DSN :  
+     ```sh
+     MAILER_DSN=smtp://your_mail_server
+     ```
+---
+
+Thank you for exploring this project.  
+Feel free to explore, modify, and improve it ! ✨  
+
+**For any questions or collaboration, don’t hesitate to reach out ! 📩**
 
 [TolMen](https://github.com/TolMen) - [LinkedIn](https://www.linkedin.com/in/jessyfrachisse/)
-
-## License
-
-This project is licensed under MIT - View file [license](LICENSE) for more details.
-
-Feel free to contact me with any questions or contributions. Have a nice visit on our blog !
